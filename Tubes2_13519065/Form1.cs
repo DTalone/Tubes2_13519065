@@ -57,8 +57,7 @@ namespace Connect
                         {
                             baca = bacafile.ReadLine(); // Read file line by line
                             string[] cur_line = baca.Split(' ');
-                            graph.AddEdge(cur_line[0], cur_line[1]);
-                            graph.AddEdge(cur_line[1], cur_line[0]);
+                            graph.AddEdge(cur_line[0], cur_line[1]).Attr.ArrowheadAtTarget = Microsoft.Msagl.Drawing.ArrowStyle.None;
                         }
 
                         try
@@ -114,5 +113,29 @@ namespace Connect
             }
         }
 
+        private void panel_DrawGraph_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void comboBox3_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label7_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label3_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
