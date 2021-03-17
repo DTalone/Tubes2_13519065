@@ -17,7 +17,9 @@ namespace Connect
     public partial class Form1 : Form
     {
         Microsoft.Msagl.Drawing.Graph graph; // The graph that MSAGL accepts
-        Microsoft.Msagl.GraphViewerGdi.GViewer viewer = new Microsoft.Msagl.GraphViewerGdi.GViewer(); // Graph viewer engine
+        Microsoft.Msagl.GraphViewerGdi.GViewer viewer = new Microsoft.Msagl.GraphViewerGdi.GViewer();
+        
+        // Graph viewer engine
         Graph Graf;
         int JumlahNode;
         bool graphLoaded = false;
@@ -32,6 +34,7 @@ namespace Connect
             // Browse Document
             openFileGraph.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
             openFileGraph.InitialDirectory = Directory.GetCurrentDirectory();
+
 
             // Show file dialog
             DialogResult result = openFileGraph.ShowDialog();
@@ -82,6 +85,7 @@ namespace Connect
             viewer.Dock = System.Windows.Forms.DockStyle.Fill;
             panel_DrawGraph.Controls.Add(viewer);
             panel_DrawGraph.ResumeLayout();
+
         }
 
         //Graph declaration
@@ -136,6 +140,13 @@ namespace Connect
         private void label3_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            string x = "Hello world";
+            textBox1.Text = x;
+            //textBox1.Text = "Anying"; bakal ketimpa
         }
     }
 }

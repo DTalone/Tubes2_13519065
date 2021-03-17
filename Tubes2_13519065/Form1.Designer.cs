@@ -66,6 +66,7 @@
             // panel_DrawGraph
             // 
             this.panel_DrawGraph.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.panel_DrawGraph.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.panel_DrawGraph.Location = new System.Drawing.Point(28, 175);
             this.panel_DrawGraph.Name = "panel_DrawGraph";
             this.panel_DrawGraph.Size = new System.Drawing.Size(784, 284);
@@ -183,12 +184,15 @@
             this.button1.TabIndex = 12;
             this.button1.Text = "Submit";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // textBox1
             // 
+            this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBox1.Location = new System.Drawing.Point(526, 511);
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
+            this.textBox1.ReadOnly = true;
             this.textBox1.Size = new System.Drawing.Size(286, 168);
             this.textBox1.TabIndex = 13;
             // 
