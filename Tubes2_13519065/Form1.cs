@@ -144,7 +144,7 @@ namespace Connect
 
         private void button1_Click(object sender, EventArgs e)
         {
-            // Bikin fungsi dfs bfs, trs panggil disini. Ini button submit ceunah wkwk
+            // Bikin fungsi dfs bfs, trs panggil disini. Ini button submit ceunah wkwk 
             string x = "Hello world";
             textBox1.Text = x;
             //textBox1.Text = "Anying"; bakal ketimpa
