@@ -124,7 +124,7 @@ namespace Connect
 
         private void comboBox3_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            
         }
 
         private void label7_Click(object sender, EventArgs e)
@@ -145,9 +145,54 @@ namespace Connect
         private void button1_Click(object sender, EventArgs e)
         {
             // Bikin fungsi dfs bfs, trs panggil disini. Ini button submit ceunah wkwk 
-            string x = "Hello world";
-            textBox1.Text = x;
-            //textBox1.Text = "Anying"; bakal ketimpa
+            if (radioButton1.Checked)
+            {
+                if (comboBox3.Text == "Show Graph")
+                {
+                    string x = "DFS1";
+                    textBox1.Text = x;
+                }
+                else if (comboBox3.Text == "Friend Recommendation")
+                {
+                    string x = "DFS2";
+                    textBox1.Text = x;
+                }
+                else if (comboBox3.Text == "Explore Friends")
+                {
+                    string x = "DFS3";
+                    textBox1.Text = x;
+                }
+
+            }
+            if (radioButton2.Checked)
+            {
+                if (comboBox3.Text == "Show Graph")
+                {
+                    string x = "BFS1";
+                    textBox1.Text = x;
+                }
+                else if (comboBox3.Text == "Friend Recommendation")
+                {
+                    string x = "BFS2";
+                    textBox1.Text = x;
+                }
+                else if (comboBox3.Text == "Explore Friends")
+                {
+                    string x = "BFS3";
+                    textBox1.Text = x;
+                }
+            }
+
+        }
+
+        private void radioButton1_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void radioButton2_CheckedChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
