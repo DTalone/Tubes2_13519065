@@ -16,7 +16,7 @@ namespace Connect
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            Application.Run(new Tubes2_13519065.Form2());
         }
     }
 }

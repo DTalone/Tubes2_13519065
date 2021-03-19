@@ -71,7 +71,7 @@
             // 
             this.panel_DrawGraph.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.panel_DrawGraph.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.panel_DrawGraph.Location = new System.Drawing.Point(52, 201);
+            this.panel_DrawGraph.Location = new System.Drawing.Point(68, 201);
             this.panel_DrawGraph.Name = "panel_DrawGraph";
             this.panel_DrawGraph.Size = new System.Drawing.Size(735, 284);
             this.panel_DrawGraph.TabIndex = 2;
@@ -87,7 +87,7 @@
             this.label1.BackColor = System.Drawing.Color.Transparent;
             this.label1.Font = new System.Drawing.Font("Verdana", 24F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.SystemColors.Menu;
-            this.label1.Location = new System.Drawing.Point(237, 29);
+            this.label1.Location = new System.Drawing.Point(255, 28);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(376, 38);
             this.label1.TabIndex = 3;
@@ -100,7 +100,7 @@
             this.label2.BackColor = System.Drawing.Color.Transparent;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.ForeColor = System.Drawing.SystemColors.Menu;
-            this.label2.Location = new System.Drawing.Point(79, 127);
+            this.label2.Location = new System.Drawing.Point(65, 126);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(178, 25);
             this.label2.TabIndex = 4;
@@ -112,7 +112,7 @@
             this.label3.BackColor = System.Drawing.Color.Transparent;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.ForeColor = System.Drawing.SystemColors.Menu;
-            this.label3.Location = new System.Drawing.Point(79, 166);
+            this.label3.Location = new System.Drawing.Point(63, 166);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(180, 25);
             this.label3.TabIndex = 5;
@@ -155,7 +155,7 @@
             this.label4.BackColor = System.Drawing.Color.Transparent;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label4.ForeColor = System.Drawing.SystemColors.Menu;
-            this.label4.Location = new System.Drawing.Point(47, 511);
+            this.label4.Location = new System.Drawing.Point(60, 511);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(236, 25);
             this.label4.TabIndex = 8;
@@ -167,7 +167,7 @@
             this.label5.BackColor = System.Drawing.Color.Transparent;
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label5.ForeColor = System.Drawing.SystemColors.Menu;
-            this.label5.Location = new System.Drawing.Point(47, 574);
+            this.label5.Location = new System.Drawing.Point(65, 574);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(236, 25);
             this.label5.TabIndex = 9;
@@ -190,7 +190,7 @@
             this.comboBox2.DisplayMember = "A";
             this.comboBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F);
             this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Location = new System.Drawing.Point(302, 566);
+            this.comboBox2.Location = new System.Drawing.Point(302, 571);
             this.comboBox2.Name = "comboBox2";
             this.comboBox2.Size = new System.Drawing.Size(155, 33);
             this.comboBox2.TabIndex = 11;
@@ -200,7 +200,7 @@
             this.button1.BackColor = System.Drawing.Color.Transparent;
             this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button1.ForeColor = System.Drawing.SystemColors.WindowFrame;
-            this.button1.Location = new System.Drawing.Point(183, 626);
+            this.button1.Location = new System.Drawing.Point(184, 645);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(117, 36);
             this.button1.TabIndex = 12;
@@ -211,11 +211,11 @@
             // textBox1
             // 
             this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox1.Location = new System.Drawing.Point(508, 516);
+            this.textBox1.Location = new System.Drawing.Point(541, 532);
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(286, 168);
+            this.textBox1.Size = new System.Drawing.Size(262, 187);
             this.textBox1.TabIndex = 13;
             // 
             // label6
@@ -224,7 +224,7 @@
             this.label6.BackColor = System.Drawing.Color.Transparent;
             this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label6.ForeColor = System.Drawing.SystemColors.Menu;
-            this.label6.Location = new System.Drawing.Point(503, 488);
+            this.label6.Location = new System.Drawing.Point(536, 504);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(134, 25);
             this.label6.TabIndex = 14;
@@ -239,7 +239,7 @@
             "Show Graph",
             "Friend Recommendation",
             "Explore Friends"});
-            this.comboBox3.Location = new System.Drawing.Point(541, 124);
+            this.comboBox3.Location = new System.Drawing.Point(550, 123);
             this.comboBox3.Name = "comboBox3";
             this.comboBox3.Size = new System.Drawing.Size(253, 33);
             this.comboBox3.TabIndex = 16;
@@ -260,8 +260,7 @@
             // 
             // pictureBox1
             // 
-            this.pictureBox1.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.pictureBox1.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("pictureBox1.BackgroundImage")));
+            this.pictureBox1.BackColor = System.Drawing.Color.Transparent;
             this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
             this.pictureBox1.Location = new System.Drawing.Point(91, 12);
             this.pictureBox1.Name = "pictureBox1";
@@ -277,7 +276,7 @@
             this.BackColor = System.Drawing.Color.GhostWhite;
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.ClientSize = new System.Drawing.Size(840, 715);
+            this.ClientSize = new System.Drawing.Size(868, 741);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.comboBox3);
@@ -297,7 +296,9 @@
             this.Controls.Add(this.panel_DrawGraph);
             this.MaximizeBox = false;
             this.Name = "Form1";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Form1";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
