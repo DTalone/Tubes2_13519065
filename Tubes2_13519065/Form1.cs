@@ -16,11 +16,8 @@ namespace Connect
 
     public partial class Form1 : Form
     {
-        Microsoft.Msagl.Drawing.Graph graph; // The graph that MSAGL accepts
-        Microsoft.Msagl.GraphViewerGdi.GViewer viewer = new Microsoft.Msagl.GraphViewerGdi.GViewer();
-        
         // Graph viewer engine
-
+        private Graph graf;
         public Form1()
         {
             InitializeComponent();
@@ -38,7 +35,6 @@ namespace Connect
 
             if (result == DialogResult.OK)
             {
-                graph = new Microsoft.Msagl.Drawing.Graph("graph"); // Initialize new MSAGL graph                
                 // Read input file
                 using (StreamReader bacafile = new StreamReader(openFileGraph.OpenFile()))
                 {
@@ -49,29 +45,28 @@ namespace Connect
                     }
                     else
                     {
-
-                        while (bacafile.Peek() >= 0)
-                        {
-                            baca = bacafile.ReadLine(); // Read file line by line
-                            string[] cur_line = baca.Split(' ');
-                            graph.AddEdge(cur_line[0], cur_line[1]).Attr.ArrowheadAtTarget = Microsoft.Msagl.Drawing.ArrowStyle.None;
-                        }
-
-                        try
-                        {
-                            DrawGraph();
-                        }
-                        catch (Exception)
-                        {
-                            MessageBox.Show("Input Text Mengandung Graf Siklik");
-                        }
+                        this.graf = new Graph(bacafile);
+                        DrawGraph(this.graf);
                     }
                 }
             }
         }
 
-        private void DrawGraph()
+        private void DrawGraph(Graph graf)
         {
+            Microsoft.Msagl.Drawing.Graph graph; // The graph that MSAGL accepts
+            Microsoft.Msagl.GraphViewerGdi.GViewer viewer = new Microsoft.Msagl.GraphViewerGdi.GViewer();
+
+            graph = new Microsoft.Msagl.Drawing.Graph("graph"); // Initialize new MSAGL graph                
+
+            foreach (KeyValuePair<string, List<string>> entry1 in graf.getAdjacent())
+            {
+                // do something with entry.Value or entry.Key
+                foreach (var entry2 in entry1.Value)
+                {
+                    graph.AddEdge(entry1.Key,entry2).Attr.ArrowheadAtTarget = Microsoft.Msagl.Drawing.ArrowStyle.None;
+                }
+            }
             // Bind graph to viewer engine
             viewer.Graph = graph;
             // Bind viewer engine to the panel
@@ -163,6 +158,11 @@ namespace Connect
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
             Application.Exit();
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
