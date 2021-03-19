@@ -23,7 +23,10 @@ namespace Connect
             this.totalEdges = 0;
             this.adjacent.Clear();
         }
-
+        public int getEdges()
+        {
+            return this.totalEdges;
+        }
         public Graph(StreamReader file)
         {
             this.totalNodes = 0;

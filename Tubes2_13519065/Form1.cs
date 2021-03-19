@@ -29,7 +29,6 @@ namespace Connect
             openFileGraph.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
             openFileGraph.InitialDirectory = Directory.GetCurrentDirectory();
 
-
             // Show file dialog
             DialogResult result = openFileGraph.ShowDialog();
 
@@ -56,7 +55,7 @@ namespace Connect
         {
             Microsoft.Msagl.Drawing.Graph graph; // The graph that MSAGL accepts
             Microsoft.Msagl.GraphViewerGdi.GViewer viewer = new Microsoft.Msagl.GraphViewerGdi.GViewer();
-
+            List<Tuple<string, string>> visited = new List<Tuple<string, string>>();
             graph = new Microsoft.Msagl.Drawing.Graph("graph"); // Initialize new MSAGL graph                
 
             foreach (KeyValuePair<string, List<string>> entry1 in graf.getAdjacent())
@@ -64,7 +63,11 @@ namespace Connect
                 // do something with entry.Value or entry.Key
                 foreach (var entry2 in entry1.Value)
                 {
-                    graph.AddEdge(entry1.Key,entry2).Attr.ArrowheadAtTarget = Microsoft.Msagl.Drawing.ArrowStyle.None;
+                    if (!visited.Contains(Tuple.Create(entry1.Key, entry2)) && !visited.Contains(Tuple.Create(entry2, entry1.Key)))
+                    {
+                        graph.AddEdge(entry1.Key,entry2).Attr.ArrowheadAtTarget = Microsoft.Msagl.Drawing.ArrowStyle.None;
+                    }
+                    visited.Add(Tuple.Create(entry1.Key, entry2));
                 }
             }
             // Bind graph to viewer engine
@@ -74,7 +77,6 @@ namespace Connect
             viewer.Dock = System.Windows.Forms.DockStyle.Fill;
             panel_DrawGraph.Controls.Add(viewer);
             panel_DrawGraph.ResumeLayout();
-
         }
 
         private void panel_DrawGraph_Paint(object sender, PaintEventArgs e)
