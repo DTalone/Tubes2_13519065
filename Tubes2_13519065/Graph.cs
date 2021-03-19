@@ -32,5 +32,23 @@ namespace Connect
             sisi = null;
             depth = null;
         }
+
+        public class BFS
+        {
+            public string search(string root, string target)
+            {
+                return null;
+            }
+        }
+
+        public class DFS
+        {
+            public string search(string root, string target)
+            {
+                return null;
+            }
+
+        }
+
     }
 }
