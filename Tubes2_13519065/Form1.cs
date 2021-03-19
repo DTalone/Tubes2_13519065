@@ -16,6 +16,8 @@ namespace Connect
 
     public partial class Form1 : Form
     {
+        Microsoft.Msagl.Drawing.Graph graph; // The graph that MSAGL accepts
+        Microsoft.Msagl.GraphViewerGdi.GViewer viewer = new Microsoft.Msagl.GraphViewerGdi.GViewer();
         // Graph viewer engine
         private Graph graf;
         public Form1()
@@ -53,8 +55,7 @@ namespace Connect
 
         private void DrawGraph(Graph graf)
         {
-            Microsoft.Msagl.Drawing.Graph graph; // The graph that MSAGL accepts
-            Microsoft.Msagl.GraphViewerGdi.GViewer viewer = new Microsoft.Msagl.GraphViewerGdi.GViewer();
+
             List<Tuple<string, string>> visited = new List<Tuple<string, string>>();
             graph = new Microsoft.Msagl.Drawing.Graph("graph"); // Initialize new MSAGL graph                
 
