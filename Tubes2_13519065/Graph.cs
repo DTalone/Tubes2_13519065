@@ -12,19 +12,16 @@ namespace Connect
         private int totalNodes;
         private int totalEdges;
 
-        public Graph()
+        public Graph(int edges)
         {
-            this->totalNodes = 0;
-            this->totalEdges = 0;
+            this.totalEdges = 0;
+            this.totalNodes = 0;
         }
         ~Graph()
         {
-            this->totalNodes = null;
-            this->totalEdges = null;
-            foreach (Dictionary<string,string[]> edge: this->adjacent)
-            {
-                edge = null;
-            }
+            this.totalNodes = 0;
+            this.totalEdges = 0;
+            this.adjacent.Clear();
         }
 
         public class BFS

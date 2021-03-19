@@ -20,9 +20,6 @@ namespace Connect
         Microsoft.Msagl.GraphViewerGdi.GViewer viewer = new Microsoft.Msagl.GraphViewerGdi.GViewer();
         
         // Graph viewer engine
-        Graph Graf;
-        int JumlahNode;
-        bool graphLoaded = false;
 
         public Form1()
         {
@@ -52,9 +49,6 @@ namespace Connect
                     }
                     else
                     {
-                        graphLoaded = true;
-                        JumlahNode = Int32.Parse(baca);
-                        Graf = new Graph(JumlahNode);
 
                         while (bacafile.Peek() >= 0)
                         {
