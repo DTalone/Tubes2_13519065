@@ -71,6 +71,9 @@ namespace Connect
                     visited.Add(Tuple.Create(entry1.Key, entry2));
                 }
             }
+            graph.LayoutAlgorithmSettings = new Microsoft.Msagl.Layout.MDS.MdsLayoutSettings();
+            viewer.CurrentLayoutMethod = Microsoft.Msagl.GraphViewerGdi.LayoutMethod.UseSettingsOfTheGraph;
+            viewer.Graph = graph;
             // Bind graph to viewer engine
             viewer.Graph = graph;
             // Bind viewer engine to the panel
