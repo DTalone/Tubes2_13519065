@@ -8,29 +8,23 @@ namespace Connect
 {
     internal class Graph
     {
-        private List<int>[] sisi;
-        private int[] depth;
-        private int simpul;
+        private Dictionary<string,string[]> adjacent;
+        private int totalNodes;
+        private int totalEdges;
 
-        public Graph(int n)
+        public Graph()
         {
-            simpul = n;
-            sisi = new List<int>[n + 1];
-            depth = new int[n + 1];
-            for (int i = 0; i <= n; i++)
-            {
-                sisi[i] = new List<int>();
-                depth[i] = 0;
-            }
+            this->totalNodes = 0;
+            this->totalEdges = 0;
         }
         ~Graph()
         {
-            for (int i = 0; i <= simpul; i++)
+            this->totalNodes = null;
+            this->totalEdges = null;
+            foreach (Dictionary<string,string[]> edge: this->adjacent)
             {
-                sisi[i] = null;
+                edge = null;
             }
-            sisi = null;
-            depth = null;
         }
 
         public class BFS
@@ -47,7 +41,6 @@ namespace Connect
             {
                 return null;
             }
-
         }
 
     }
