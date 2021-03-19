@@ -13,7 +13,6 @@ using System.Threading;
 namespace Connect
 {
 
-
     public partial class Form1 : Form
     {
         Microsoft.Msagl.Drawing.Graph graph; // The graph that MSAGL accepts
@@ -145,9 +144,30 @@ namespace Connect
                     textBox1.Text = x;
                 }
                 else if (comboBox3.Text == "Friend Recommendation")
-                {
-                    string x = "BFS2";
+                {   
+                    // Siapin parameter yang mau digunain buat BFS
+                    List<List<string>> queue = new List<List<string>>();   
+                    List<List<string>> solution = new List<List<string>>(); // Mencatat solusi rute
+                    Dictionary<string, List<string>> adjacent = new Dictionary<string, List<string>>();
+                    List<string> route = new List<string>();
+                    string accName = comboBox3.Text;    // Ambil simpul awal
+                    route.Add(accName);
+                    queue.Add(route);      // Masukin simpul awal ke queue
+                    adjacent = graf.getAdjacent();
+
+                    // Mencari rekomendasi teman dengan BFS
+                    BFS b = new BFS();
+                    graf = b;
+                    b.friendsRecommendation(accName, adjacent, queue, solution);
+
+                    // Tampilin di notes
+                    string x = "Daftar rekomendasi teman untuk akun "+accName+":";
                     textBox1.Text = x;
+                    x = (queue.ElementAt(0)).Last();
+                    textBox1.Text = x;
+                    x = "Test Rute: ";
+                    textBox1.Text = x;
+                    x = queue.ElementAt(0).ToString();
                 }
                 else if (comboBox3.Text == "Explore Friends")
                 {

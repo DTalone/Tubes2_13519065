@@ -68,6 +68,39 @@ namespace Connect
             {
                 return null;
             }
+
+            public void friendsRecommendation(string root, Dictionary<string, List<string>> adjacent, List<List<string>> queue, List<List<string>> solution)
+            {
+                if (queue.ElementAt(0).Count <= 3) // Jika level < 2
+                {
+                    if (queue.ElementAt(0).Count == 3) // Jika level == 2, masukkan ke solution
+                    {
+                        solution.Add(queue.ElementAt(0));
+                    }
+
+                    List<string> route; // Rute graf; [A,B,C] = A->B->C
+                    foreach (string node in adjacent[root].OrderBy(node => node).ToList())
+                    {
+                        route = queue.ElementAt(0);     // Ambil elemen pertama queue & tambahkan simpul tetangga
+                        route.Add(node);
+                        queue.Add(route);               // Tambahkan ke belakang queue
+                        route.Clear();
+                    }
+                    
+                    queue.RemoveAt(0);     // Dequeue
+                    adjacent.Remove(root); // Hapuskan simpul root
+                    List<string> nodeList = adjacent.Keys.ToList();
+                    foreach (string node in nodeList)
+                    {
+                        // Hapuskan sisi root yang berhubungan dengan simpul lain
+                        adjacent[node].Remove(root);
+                    }
+
+                    List<string> nextNode = queue.ElementAt(0); // Assign node yang ingin diproses
+                    string _root = queue.ElementAt(0).Last();     // Node yang ingin diproses terdapat di akhir rute
+                    friendsRecommendation(_root, adjacent, queue, solution);
+                }
+            }
         }
 
         public class DFS
