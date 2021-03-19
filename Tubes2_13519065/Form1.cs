@@ -47,7 +47,14 @@ namespace Connect
                     else
                     {
                         this.graf = new Graph(bacafile);
-                        DrawGraph(this.graf);
+                        comboBox1.Items.Clear();
+                        comboBox2.Items.Clear();
+                        foreach (KeyValuePair<string, List<string>> entry1 in graf.getAdjacent())
+                        {
+                            comboBox1.Items.Add(entry1.Key);
+                            comboBox2.Items.Add(entry1.Key);
+                        }
+                            DrawGraph(this.graf);
                     }
                 }
             }
@@ -167,6 +174,11 @@ namespace Connect
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }
