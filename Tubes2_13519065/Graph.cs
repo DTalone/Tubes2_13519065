@@ -62,15 +62,42 @@ namespace Connect
         {
             return this.adjacent;
         }
-        public class BFS
+        public class BFS : Graph
         {
             public string search(string root, string target)
             {
                 return null;
             }
+            public Queue<Tuple<string, string>> exploreFriends(string root, string target)
+            {
+                Queue<Tuple<string, Queue<Tuple<string,string>>>> temp = new Queue<Tuple<string, Queue<Tuple<string, string>>>>();
+                Tuple<string, Queue<Tuple<string, string>>> path;
+                HashSet<string> visited= new HashSet<string>();
+                temp.Enqueue(Tuple.Create(root, new Queue<Tuple<string, string>>()));
+                while (temp.Count!=0)
+                {
+                    path=temp.Dequeue();
+                    
+                    if (path.Item1==target && path.Item2.Count%2==1)
+                    {
+                        return path.Item2;
+                    }
+
+                    foreach (var node in this.adjacent[path.Item1])
+                    {
+                        if (!visited.Contains(node))
+                        {
+                            visited.Add(node);
+                            path.Item2.Enqueue(Tuple.Create(path.Item1, node));
+                            temp.Enqueue(Tuple.Create(root, path.Item2));
+                        }       
+                    }
+                }
+                return null;
+            }
         }
 
-        public class DFS
+        public class DFS : Graph
         {
             public string search(string root, string target)
             {
