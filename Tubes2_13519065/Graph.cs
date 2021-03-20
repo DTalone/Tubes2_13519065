@@ -15,7 +15,7 @@ namespace Connect
         private Microsoft.Msagl.Drawing.Graph graphVisualizer;
         private Microsoft.Msagl.GraphViewerGdi.GViewer viewer;
         private Panel panel_DrawGraph;
-        public Graph()
+       public Graph()
         {
             this.totalEdges = 0;
             this.totalNodes = 0;
@@ -168,6 +168,7 @@ namespace Connect
                     text = text + ":\r\n";
                     text = text + String.Join("\r\n", list) + "\r\n";
                 }
+                text = text + "\r\n";
             }
             return text;
         }
@@ -214,6 +215,7 @@ namespace Connect
                             {
                                 visited.Add(node);
                                 tmp.Add(node);
+                                //activateEdge(List<string>)
                                 queue.Enqueue(Tuple.Create(node, tmp));
                                 //activateEdge(path.Item2);
                             }
