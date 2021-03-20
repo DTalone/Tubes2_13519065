@@ -167,6 +167,7 @@ namespace Connect
                     }
                     text = text + ":\r\n";
                     text = text + String.Join("\r\n", list) + "\r\n";
+                    text = text + "\r\n";
                 }
             }
             return text;
@@ -227,8 +228,7 @@ namespace Connect
                 }
                 return null;
             }
-            /* Mengembalikan path untuk menuju akun rekomendasi
-               serta mengubah accRecommendations yang berada 2 level dari target */
+            /* Mengembalikan node yang berada 2 level dari simpul & bukan tetangga root */
             public List<string> friendsRecommendation(string root)
             {
                 Tuple<string, int, List<String>> head;
@@ -236,24 +236,26 @@ namespace Connect
                 Queue<Tuple<string, int, List<String>>> queue = new Queue<Tuple<string, int, List<string>>>();
                 HashSet<string> visited = new HashSet<string>();
 
-                /* Masukkan root ke queue (nama node, level) */
+                /* Masukkan root ke queue (nama node, level, rute) */
                 answer.Add(root);
                 queue.Enqueue(Tuple.Create(root, 0, answer)); ;
                 visited.Add(root);
                 try
                 {
-                    while (queue.Count!=0) // Selama level kurang dari 2
+                    while (queue.Count!=0) // Selama queue tidak kosong
                     {
                         head = queue.Peek();
                         if (head.Item2==2)
                         {
+                            /* Jika isi queue sudah level 2, keluar dari loop */
                             break;
                         }
 
-                        foreach (var node in this.adjacent[head.Item1])
+                        foreach (var node in this.adjacent[head.Item1].OrderBy(simpul => simpul).ToList())
                         {
                             answer = new List<string> (head.Item3);
-                            /* Masukkan simpul tetangga dari head jika belum dikunjungi */
+                            /* Untuk setiap simpul tetangga 
+                             * masukkan simpul tetangga jika belum dikunjungi */
                             if (!visited.Contains(node))
 	                        {
                                 visited.Add(node);
@@ -263,16 +265,17 @@ namespace Connect
                         }
                         queue.Dequeue();
                     }
+                    /* EOP : Isi queue merupakan simpul level 2 dari root */
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine($"ERROR : {e}");
                 }
-                /* EOP : Isi queue merupakan simpul level n dari root */
-                /* Masukkan ke solusi */
+                
                 Console.WriteLine(queue.Peek().Item2 + " : " + string.Join("\t", queue.Peek().Item1));
                 if (queue.Count() > 0)
                 {
+                    /* Masukkan ke solusi */
                     answer = new List<string>();
                     while (queue.Count() != 0)
                 	{
@@ -287,8 +290,6 @@ namespace Connect
                     return null;
                 }
             }
-            /* Mengembalikan mutual friends dari root ke target */
-
         }
 
         public class DFS : Graph
@@ -346,7 +347,57 @@ namespace Connect
                 }
                 return null;
             }
-        }
 
+            /* Mengembalikan node yang berada 2 level dari simpul & bukan tetangga root */
+            public List<string> friendsRecommendation(string root)
+            {
+                Tuple<string, int, List<String>> top;
+                List<string> currRoute = new List<string>();
+                List<string> answer = new List<string>();
+                Stack<Tuple<string, int, List<String>>> stack = new Stack<Tuple<string, int, List<string>>>();
+                HashSet<string> visited = new HashSet<string>();
+
+                /* Masukkan root ke stack (nama node, level, rute) */
+                currRoute.Add(root);
+                stack.Push(Tuple.Create(root, 0, currRoute));
+                visited.Add(root);
+                try
+                {
+                    while (stack.Count!=0) // Selama stack tidak kosong
+                    {
+                        top = stack.Pop();
+                        visited.Add(top.Item1);
+                        if (top.Item2 < 2)
+                        {
+                            foreach (var node in this.adjacent[top.Item1].OrderByDescending(simpul => simpul).ToList())
+                            {
+                                currRoute = new List<string> (top.Item3);
+                                /* Untuk setiap simpul tetangga
+                                 * masukkan simpul tetangga jika belum dikunjungi */
+                                if (!visited.Contains(node))
+                                {
+                                    currRoute.Add(node);
+                                    stack.Push(Tuple.Create(node, top.Item2+1,currRoute));
+                                }
+                            }
+                        }
+                        else // Jika simpul level 2
+                        {
+                            /* Masukkan ke solusi, jika bukan tetangga root */
+                            if (!this.adjacent[root].Contains(top.Item1))
+                            {
+                                answer.Add(top.Item1);
+                            }
+                        }
+                    }
+                    /* EOP : Isi stack kosong */
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"ERROR : {e}");
+                }
+                return answer;
+            }
+        }
     }
 }

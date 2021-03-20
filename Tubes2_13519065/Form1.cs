@@ -144,7 +144,13 @@ namespace Connect
                 }
                 else if (comboBox3.Text == "Friend Recommendation")
                 {
-                    string x = "DFS2";
+                    Graph.DFS d;
+                    d = new Graph.DFS(this.graf, ref graph, ref panel_DrawGraph, ref viewer);
+                    List<string> recommendation = new List<string>();
+                    List<string> node = new List<string>(d.friendsRecommendation(comboBox1.Text));
+                    string x = "Daftar rekomendasi teman untuk akun " + comboBox1.Text +":\r\n";
+                    x = x + d.friendRecommendationText(comboBox1.Text,node);
+
                     textBox1.Text = x;
                 }
                 else if (comboBox3.Text == "Explore Friends")
