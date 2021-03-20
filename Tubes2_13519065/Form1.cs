@@ -161,29 +161,33 @@ namespace Connect
                 }
                 else if (comboBox3.Text == "Friend Recommendation")
                 {   
-                    // Siapin parameter yang mau digunain buat BFS
-                    List<List<string>> queue = new List<List<string>>();   
-                    List<List<string>> solution = new List<List<string>>(); // Mencatat solusi rute
-                    Dictionary<string, List<string>> adjacent = new Dictionary<string, List<string>>();
-                    List<string> route = new List<string>();
-                    string accName = comboBox3.Text;    // Ambil simpul awal
-                    route.Add(accName);
-                    queue.Add(route);      // Masukin simpul awal ke queue
-                    adjacent = graf.getAdjacent();
-
-                    // Mencari rekomendasi teman dengan BFS
                     Graph.BFS b;
-                    b= new Graph.BFS(this.graf, ref graph, ref panel_DrawGraph, ref viewer);
-                    b.friendsRecommendation(accName, adjacent, queue, solution);
-
-                    // Tampilin di notes
-                    string x = "Daftar rekomendasi teman untuk akun "+accName+":";
+                    b = new Graph.BFS(this.graf, ref graph, ref panel_DrawGraph, ref viewer);
+                    List<string> recommendation = new List<string>(b.friendsRecommendation(comboBox1.Text));
+                    List<string> mutuals;
+                    string x = "Daftar rekomendasi teman untuk akun " + comboBox1.Text +":\r\n";
+                    foreach(var account in recommendation)
+                    {
+                        x = x + "Nama akun: " + account +"\r\n";
+                        mutuals = b.getMutualFriends(comboBox1.Text, account);
+                        if (mutuals.Count() > 1)
+                    	{
+                            x = x + mutuals.Count() + " mutual friends:\r\n";
+	                    }
+                        else
+	                    {
+                            x = x + mutuals.Count() + " mutual friend:\r\n";
+	                    }
+                        foreach (var mutualAcc in mutuals)
+                        {
+                            x = x + mutualAcc + "\r\n";
+                        }
+                        if(account != recommendation.Last())
+                        {
+                            x = x + "\r\n";
+                        }
+                    }
                     textBox1.Text = x;
-                    x = (queue.ElementAt(0)).Last();
-                    textBox1.Text = x;
-                    x = "Test Rute: ";
-                    textBox1.Text = x;
-                    x = queue.ElementAt(0).ToString();
                 }
                 else if (comboBox3.Text == "Explore Friends")
                 {
