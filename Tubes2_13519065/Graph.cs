@@ -64,6 +64,12 @@ namespace Connect
         }
         public class BFS : Graph
         {
+            public BFS(Graph graf)
+            {
+                this.adjacent = graf.adjacent;
+                this.totalEdges = graf.totalEdges;
+                this.totalNodes = graf.totalNodes;
+            }
             public string search(string root, string target)
             {
                 return null;

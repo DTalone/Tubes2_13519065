@@ -156,8 +156,8 @@ namespace Connect
                     adjacent = graf.getAdjacent();
 
                     // Mencari rekomendasi teman dengan BFS
-                    BFS b = new BFS();
-                    graf = b;
+                    Graph.BFS b;
+                    b= new Graph.BFS(this.graf);
                     b.friendsRecommendation(accName, adjacent, queue, solution);
 
                     // Tampilin di notes
