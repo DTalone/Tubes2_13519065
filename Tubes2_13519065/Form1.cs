@@ -148,6 +148,7 @@ namespace Connect
                 if (comboBox3.Text == "Show Graph")
                 {
                     string x = "DFS1";
+                    DrawGraph(this.graf);
                     textBox1.Text = x;
                 }
                 else if (comboBox3.Text == "Friend Recommendation")
@@ -165,7 +166,6 @@ namespace Connect
                 {
                     Graph.DFS d;
                     d = new Graph.DFS(this.graf, ref graph, ref panel_DrawGraph, ref viewer);
-                    d.setButton(ref button3);
                     List<string> answer = new List<string>(d.exploreFriends(comboBox1.Text, comboBox2.Text));
                     string x = "Nama akun : " + comboBox1.Text + " dan " + comboBox2.Text + "\r\n";
                     x = x + d.exploreFriendsText(answer);
@@ -184,7 +184,6 @@ namespace Connect
                 {
                     Graph.BFS b;
                     b = new Graph.BFS(this.graf, ref graph, ref panel_DrawGraph, ref viewer);
-                    b.setButton(ref button3);
                     List<string> recommendation = new List<string>();
                     List<string> node = new List<string>(b.friendsRecommendation(comboBox1.Text));
                     string x = "Daftar rekomendasi teman untuk akun " + comboBox1.Text +":\r\n";
@@ -195,25 +194,12 @@ namespace Connect
                 }
                 else if (comboBox3.Text == "Explore Friends")
                 {
-                    Console.WriteLine("Awal Explore");
-                    foreach (KeyValuePair<string, List<string>> entry1 in graf.getAdjacent())
-                    {
-                        entry1.Value.Sort();
-                        Console.WriteLine(entry1.Key + " : " + string.Join("\t", entry1.Value));
-                    }
                     Graph.BFS b;
                     b = new Graph.BFS(this.graf, ref graph, ref panel_DrawGraph, ref viewer);
-                    b.setButton(ref button3);
-                    List<string> answer = new List<string>(b.exploreFriends(comboBox1.Text, comboBox2.Text));
+                    List<string> answer = new List<string>(b.exploreFriends(this.currentAccount, this.targetAccount));
                     string x = "Nama akun : " + comboBox1.Text + " dan " + comboBox2.Text + "\r\n";
                     x = x + b.exploreFriendsText(answer);
                     textBox1.Text = x;
-                    Console.WriteLine("Akhir Explore");
-                    foreach (KeyValuePair<string, List<string>> entry1 in graf.getAdjacent())
-                    {
-                        entry1.Value.Sort();
-                        Console.WriteLine(entry1.Key + " : " + string.Join("\t", entry1.Value));
-                    }
                 }
             }
 

@@ -4,38 +4,73 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using Microsoft.Msagl.Drawing;
 
 namespace Connect
 {
     internal class Graph
     {
+        System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();
         private Dictionary<string,List<string>> adjacent;
         private int totalNodes;
         private int totalEdges;
         private Microsoft.Msagl.Drawing.Graph graphVisualizer;
         private Microsoft.Msagl.GraphViewerGdi.GViewer viewer;
         private Panel panel_DrawGraph;
-        private Button next;
-        private bool nextClicked = false;
-        private void next_Click(object sender, EventArgs e)
-        {
-            Console.WriteLine("MASUKKKK!!!!!!!!!!");
-            this.nextClicked = true;
-        }
         public Graph()
         {
             this.totalEdges = 0;
             this.totalNodes = 0;
         }
-        ~Graph()
-        {
-            this.totalNodes = 0;
-            this.totalEdges = 0;
-            this.adjacent.Clear();
-        }
         public int getEdges()
         {
             return this.totalEdges;
+        }
+        public void drawFirstGraph()
+        {
+            List<Tuple<string, string>> visited = new List<Tuple<string, string>>();
+            this.graphVisualizer = new Microsoft.Msagl.Drawing.Graph("graph");
+            foreach (KeyValuePair<string, List<string>> entry1 in this.adjacent)
+            {
+                // do something with entry.Value or entry.Key
+                foreach (var entry2 in entry1.Value)
+                {
+                    if (!visited.Contains(Tuple.Create(entry1.Key, entry2)) && !visited.Contains(Tuple.Create(entry2, entry1.Key)))
+                    {
+                        this.graphVisualizer.AddEdge(entry1.Key, entry2).Attr.ArrowheadAtTarget = Microsoft.Msagl.Drawing.ArrowStyle.None;
+                    }
+                    visited.Add(Tuple.Create(entry1.Key, entry2));
+                }
+            }
+            drawContainer(this.graphVisualizer);
+        }
+        
+        public void drawEdgewithColor(Microsoft.Msagl.Drawing.Graph graph, List<string> list)
+        {
+            List<Tuple<string, string>> visited = new List<Tuple<string, string>>();
+            this.graphVisualizer = new Microsoft.Msagl.Drawing.Graph("graph");
+            for (int i=0;i<list.Count-1;i++)
+            {
+                Edge tmp = this.graphVisualizer.AddEdge(list[i], list[i + 1]);
+                tmp.Attr.ArrowheadAtTarget = Microsoft.Msagl.Drawing.ArrowStyle.None;
+                tmp.Attr.Color = Microsoft.Msagl.Drawing.Color.Orange;
+                this.graphVisualizer.FindNode(list[i]).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Yellow;
+                visited.Add(Tuple.Create(list[i], list[i+1]));
+            }
+            this.graphVisualizer.FindNode(list[list.Count - 1]).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Yellow;
+            foreach (KeyValuePair<string, List<string>> entry1 in this.adjacent)
+            {
+                // do something with entry.Value or entry.Key
+                foreach (var entry2 in entry1.Value)
+                {
+                    if (!visited.Contains(Tuple.Create(entry1.Key, entry2)) && !visited.Contains(Tuple.Create(entry2, entry1.Key)))
+                    {
+                        this.graphVisualizer.AddEdge(entry1.Key, entry2).Attr.ArrowheadAtTarget = Microsoft.Msagl.Drawing.ArrowStyle.None;
+                    }
+                    visited.Add(Tuple.Create(entry1.Key, entry2));
+                }
+            }
+            drawContainer(this.graphVisualizer);
         }
         public void drawContainer(Microsoft.Msagl.Drawing.Graph graph)
         {
@@ -49,16 +84,6 @@ namespace Connect
             viewer.Dock = System.Windows.Forms.DockStyle.Fill;
             panel_DrawGraph.Controls.Add(viewer);
             panel_DrawGraph.ResumeLayout();
-        }
-        public void ganti(string a)
-        {
-            this.graphVisualizer.FindNode(a).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Black;
-            drawContainer(this.graphVisualizer);
-        }
-        public void setButton(ref Button next )
-        {
-            this.next = next;
-            this.next.Click += new System.EventHandler(this.next_Click);
         }
         public void activateEdge(List<string> list)
         {
@@ -104,6 +129,28 @@ namespace Connect
                 Console.WriteLine(entry1.Key+" : "+string.Join("\t", entry1.Value));
             }
             this.totalNodes = this.adjacent.Count;
+        }
+        public void wait(int milliseconds)
+        {
+            var timer1 = new System.Windows.Forms.Timer();
+            if (milliseconds == 0 || milliseconds < 0) return;
+
+             Console.WriteLine("start wait timer");
+            timer1.Interval = milliseconds;
+            timer1.Enabled = true;
+            timer1.Start();
+
+            timer1.Tick += (s, e) =>
+            {
+                timer1.Enabled = false;
+                timer1.Stop();
+                Console.WriteLine("stop wait timer");
+            };
+
+            while (timer1.Enabled)
+            {
+                Application.DoEvents();
+            }
         }
         public Dictionary<string, List<string>> getAdjacent()
         {
@@ -195,7 +242,7 @@ namespace Connect
                 this.graphVisualizer = graphVisualizer;
                 this.viewer = viewer;
                 this.panel_DrawGraph = draw_graph;
-
+                drawFirstGraph();
             }
             public string search(string root, string target)
             {
@@ -203,6 +250,8 @@ namespace Connect
             }
             public List<string> exploreFriends(string root, string target)
             {
+                this.graphVisualizer.FindNode(root).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Green;
+                this.graphVisualizer.FindNode(target).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Red;
                 Queue<Tuple<string, List<string>>> queue = new Queue<Tuple<string, List<string>>>();
                 Tuple<string, List<string>> path;
                 HashSet<string> visited = new HashSet<string>();
@@ -228,11 +277,11 @@ namespace Connect
                             {
                                 visited.Add(node);
                                 tmp.Add(node);
-                                while (nextClicked == false) { };
-                                //nextClicked = false;
-                                //activateEdge(List<string>)
+                                drawEdgewithColor(this.graphVisualizer, tmp);
+                                this.graphVisualizer.FindNode(root).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Green;
+                                this.graphVisualizer.FindNode(target).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Red;
+                                wait(1000);
                                 queue.Enqueue(Tuple.Create(node, tmp));
-                                //activateEdge(path.Item2);
                             }
                         }
                         queue.Dequeue();
@@ -320,15 +369,47 @@ namespace Connect
                 this.graphVisualizer = graphVisualizer;
                 this.viewer = viewer;
                 this.panel_DrawGraph = draw_graph;
-
+                this.graphVisualizer = new Microsoft.Msagl.Drawing.Graph();
+                drawFirstGraph();
             }
             public string search(string root, string target)
             {
                 return null;
             }
-
             public List<string> exploreFriends(string root, string target)
             {
+                List<string> stack = new List<string>();
+                HashSet<string> visited = new HashSet<string>();
+                this.graphVisualizer.FindNode(root).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Green;
+                this.graphVisualizer.FindNode(target).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Red;
+                exploreF(root, root, target, visited, ref stack);
+                return stack;
+            }
+            public void exploreF(string start, string current, string target, HashSet<string> visited, ref List<string> stack)
+            {
+                stack.Add(current);
+                if (current==target)
+                {
+                    return;
+                }
+                visited.Add(current);
+                foreach (var node in this.adjacent[current])
+                {
+                    if (!visited.Contains(node))
+                    {
+                        drawEdgewithColor(this.graphVisualizer, stack);
+                        this.graphVisualizer.FindNode(start).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Green;
+                        this.graphVisualizer.FindNode(target).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Red;
+                        wait(1000);
+                        exploreF(start, node, target, visited, ref stack);
+                    }
+                }
+                stack.RemoveAt(stack.Count - 1);
+            }
+            public List<string> explore(string root, string target)
+            {
+                this.graphVisualizer.FindNode(root).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Green;
+                this.graphVisualizer.FindNode(target).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Red;
                 List<string> list = new List<string>();
                 Stack<Tuple<string, List<string>>> stack = new Stack<Tuple<string, List<string>>>();
                 HashSet<string> visited = new HashSet<string>();
@@ -354,6 +435,10 @@ namespace Connect
                             {
                                 list.Add(node);
                                 stack.Push(Tuple.Create(node, list));
+                                drawEdgewithColor(this.graphVisualizer, list);
+                                this.graphVisualizer.FindNode(root).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Green;
+                                this.graphVisualizer.FindNode(target).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Red;
+                                wait(1000);
                             }
                         }
                     }
