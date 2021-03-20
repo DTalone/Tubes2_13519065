@@ -77,6 +77,10 @@ namespace Connect
                     visited.Add(Tuple.Create(entry1.Key, entry2));
                 }
             }
+            drawContainer(graph);
+        }
+        public void drawContainer(Microsoft.Msagl.Drawing.Graph graph)
+        {
             graph.LayoutAlgorithmSettings = new Microsoft.Msagl.Layout.MDS.MdsLayoutSettings();
             viewer.CurrentLayoutMethod = Microsoft.Msagl.GraphViewerGdi.LayoutMethod.UseSettingsOfTheGraph;
             viewer.Graph = graph;
@@ -88,7 +92,6 @@ namespace Connect
             panel_DrawGraph.Controls.Add(viewer);
             panel_DrawGraph.ResumeLayout();
         }
-
         private void panel_DrawGraph_Paint(object sender, PaintEventArgs e)
         {
 
@@ -157,7 +160,7 @@ namespace Connect
 
                     // Mencari rekomendasi teman dengan BFS
                     Graph.BFS b;
-                    b= new Graph.BFS(this.graf);
+                    b= new Graph.BFS(this.graf, ref graph, ref panel_DrawGraph, ref viewer);
                     b.friendsRecommendation(accName, adjacent, queue, solution);
 
                     // Tampilin di notes
@@ -173,6 +176,10 @@ namespace Connect
                 {
                     string x = "BFS3";
                     textBox1.Text = x;
+                    Graph.BFS b;
+                    b = new Graph.BFS(this.graf, ref graph, ref panel_DrawGraph, ref viewer);
+                    b.ganti("1");
+                    textBox1.Text = "ganti1";
                 }
             }
 

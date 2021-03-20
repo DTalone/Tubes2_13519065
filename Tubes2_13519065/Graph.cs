@@ -12,6 +12,9 @@ namespace Connect
         private Dictionary<string,List<string>> adjacent;
         private int totalNodes;
         private int totalEdges;
+        private Microsoft.Msagl.Drawing.Graph graphVisualizer;
+        private Microsoft.Msagl.GraphViewerGdi.GViewer viewer;
+        private Panel panel_DrawGraph;
         public Graph()
         {
             this.totalEdges = 0;
@@ -26,6 +29,19 @@ namespace Connect
         public int getEdges()
         {
             return this.totalEdges;
+        }
+        public void drawContainer(Microsoft.Msagl.Drawing.Graph graph)
+        {
+            graph.LayoutAlgorithmSettings = new Microsoft.Msagl.Layout.MDS.MdsLayoutSettings();
+            viewer.CurrentLayoutMethod = Microsoft.Msagl.GraphViewerGdi.LayoutMethod.UseSettingsOfTheGraph;
+            viewer.Graph = graph;
+            // Bind graph to viewer engine
+            viewer.Graph = graph;
+            // Bind viewer engine to the panel
+            panel_DrawGraph.SuspendLayout();
+            viewer.Dock = System.Windows.Forms.DockStyle.Fill;
+            panel_DrawGraph.Controls.Add(viewer);
+            panel_DrawGraph.ResumeLayout();
         }
         public Graph(StreamReader file)
         {
@@ -64,11 +80,20 @@ namespace Connect
         }
         public class BFS : Graph
         {
-            public BFS(Graph graf)
+            public BFS(Graph graf, ref Microsoft.Msagl.Drawing.Graph graphVisualizer, ref Panel draw_graph, ref Microsoft.Msagl.GraphViewerGdi.GViewer viewer)
             {
                 this.adjacent = graf.adjacent;
                 this.totalEdges = graf.totalEdges;
                 this.totalNodes = graf.totalNodes;
+                this.graphVisualizer = graphVisualizer;
+                this.viewer = viewer;
+                this.panel_DrawGraph = draw_graph;
+
+            }
+            public void ganti(string a)
+            {
+                this.graphVisualizer.FindNode(a).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Black;
+                drawContainer(this.graphVisualizer);
             }
             public string search(string root, string target)
             {
