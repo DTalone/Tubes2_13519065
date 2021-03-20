@@ -35,7 +35,7 @@ namespace Connect
                 // do something with entry.Value or entry.Key
                 foreach (var entry2 in entry1.Value)
                 {
-                    if (!visited.Contains(Tuple.Create(entry1.Key, entry2)) && !visited.Contains(Tuple.Create(entry2, entry1.Key)))
+                    if (!visited.Contains(Tuple.Create(entry1.Key, entry2)) || !visited.Contains(Tuple.Create(entry2, entry1.Key)))
                     {
                         this.graphVisualizer.AddEdge(entry1.Key, entry2).Attr.ArrowheadAtTarget = Microsoft.Msagl.Drawing.ArrowStyle.None;
                     }
@@ -48,16 +48,25 @@ namespace Connect
         public void drawEdgewithColor(Microsoft.Msagl.Drawing.Graph graph, List<string> list)
         {
             List<Tuple<string, string>> visited = new List<Tuple<string, string>>();
-            this.graphVisualizer = new Microsoft.Msagl.Drawing.Graph("graph");
+            Node node;
+            this.graphVisualizer = new Microsoft.Msagl.Drawing.Graph();
             for (int i=0;i<list.Count-1;i++)
             {
                 Edge tmp = this.graphVisualizer.AddEdge(list[i], list[i + 1]);
                 tmp.Attr.ArrowheadAtTarget = Microsoft.Msagl.Drawing.ArrowStyle.None;
                 tmp.Attr.Color = Microsoft.Msagl.Drawing.Color.Orange;
-                this.graphVisualizer.FindNode(list[i]).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Yellow;
+                node = this.graphVisualizer.FindNode(list[i]);
+                if (node!=null)
+                {
+                    node.Attr.FillColor = Microsoft.Msagl.Drawing.Color.Yellow;
+                }
                 visited.Add(Tuple.Create(list[i], list[i+1]));
             }
-            this.graphVisualizer.FindNode(list[list.Count - 1]).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Yellow;
+            node = this.graphVisualizer.FindNode(list[list.Count - 1]);
+            if (node != null)
+            {
+                node.Attr.FillColor = Microsoft.Msagl.Drawing.Color.Yellow;
+            }
             foreach (KeyValuePair<string, List<string>> entry1 in this.adjacent)
             {
                 // do something with entry.Value or entry.Key
@@ -264,6 +273,10 @@ namespace Connect
                     while (queue.Count != 0)
                     {
                         path = queue.Peek();
+                        drawEdgewithColor(this.graphVisualizer, path.Item2);
+                        this.graphVisualizer.FindNode(root).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Green;
+                        this.graphVisualizer.FindNode(target).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Red;
+                        wait(1000);
                         //Console.WriteLine($"current Node: {path.Item1} , Total elements: {path.Item2.Count}");
 
                         if (path.Item1 == target)
@@ -277,10 +290,6 @@ namespace Connect
                             {
                                 visited.Add(node);
                                 tmp.Add(node);
-                                drawEdgewithColor(this.graphVisualizer, tmp);
-                                this.graphVisualizer.FindNode(root).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Green;
-                                this.graphVisualizer.FindNode(target).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Red;
-                                wait(1000);
                                 queue.Enqueue(Tuple.Create(node, tmp));
                             }
                         }
@@ -307,10 +316,10 @@ namespace Connect
                 visited.Add(root);
                 try
                 {
-                    while (queue.Count!=0) // Selama queue tidak kosong
+                    while (queue.Count != 0) // Selama queue tidak kosong
                     {
                         head = queue.Peek();
-                        if (head.Item2==2)
+                        if (head.Item2 == 2)
                         {
                             /* Jika isi queue sudah level 2, keluar dari loop */
                             break;
@@ -318,17 +327,17 @@ namespace Connect
 
                         foreach (var node in this.adjacent[head.Item1].OrderBy(simpul => simpul).ToList())
                         {
-                            answer = new List<string> (head.Item3);
+                            answer = new List<string>(head.Item3);
                             /* Untuk setiap simpul tetangga 
                              * masukkan simpul tetangga jika belum dikunjungi */
                             if (!visited.Contains(node))
-	                        {
+                            {
                                 visited.Add(node);
                                 answer.Add(node);
                                 //visualisasi graph(answer)
                                 //wait until when mouse clicked ()
-                                queue.Enqueue(Tuple.Create(node, head.Item2+1,answer));
-                    	    }
+                                queue.Enqueue(Tuple.Create(node, head.Item2 + 1, answer));
+                            }
                         }
                         queue.Dequeue();
                     }
@@ -338,18 +347,18 @@ namespace Connect
                 {
                     Console.WriteLine($"ERROR : {e}");
                 }
-                
+
                 Console.WriteLine(queue.Peek().Item2 + " : " + string.Join("\t", queue.Peek().Item1));
                 if (queue.Count() > 0)
                 {
                     /* Masukkan ke solusi */
                     answer = new List<string>();
                     while (queue.Count() != 0)
-                	{
+                    {
                         head = queue.Peek();
                         queue.Dequeue();
                         answer.Add(head.Item1);
-                	}
+                    }
                     return answer;
                 }
                 else
@@ -358,6 +367,7 @@ namespace Connect
                 }
             }
         }
+
 
         public class DFS : Graph
         {
@@ -382,73 +392,38 @@ namespace Connect
                 HashSet<string> visited = new HashSet<string>();
                 this.graphVisualizer.FindNode(root).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Green;
                 this.graphVisualizer.FindNode(target).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Red;
-                exploreF(root, root, target, visited, ref stack);
-                return stack;
-            }
-            public void exploreF(string start, string current, string target, HashSet<string> visited, ref List<string> stack)
-            {
-                stack.Add(current);
-                if (current==target)
+                bool found = false;
+                exploreF(root, root, target, visited, ref stack, ref found);
+                if (found)
                 {
-                    return;
-                }
-                visited.Add(current);
-                foreach (var node in this.adjacent[current])
-                {
-                    if (!visited.Contains(node))
-                    {
-                        drawEdgewithColor(this.graphVisualizer, stack);
-                        this.graphVisualizer.FindNode(start).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Green;
-                        this.graphVisualizer.FindNode(target).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Red;
-                        wait(1000);
-                        exploreF(start, node, target, visited, ref stack);
-                    }
-                }
-                stack.RemoveAt(stack.Count - 1);
-            }
-            public List<string> explore(string root, string target)
-            {
-                this.graphVisualizer.FindNode(root).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Green;
-                this.graphVisualizer.FindNode(target).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Red;
-                List<string> list = new List<string>();
-                Stack<Tuple<string, List<string>>> stack = new Stack<Tuple<string, List<string>>>();
-                HashSet<string> visited = new HashSet<string>();
-                list.Add(root);
-                stack.Push(Tuple.Create(root, list));
-                Tuple<string, List<string>> current;
-                try
-                {
-                    while(stack.Count!=0)
-                    {
-                        current = stack.Peek();
-                        stack.Pop();
-                        visited.Add(current.Item1);
-                        Console.WriteLine($"current Node: {current.Item1} , Total elements: {current.Item2.Count}");
-                        if (current.Item1==target)
-                        {
-                            return current.Item2;
-                        }
-                        foreach (var node in this.adjacent[current.Item1])
-                        {
-                            list = new List<string>(current.Item2);
-                            if (!visited.Contains(node))
-                            {
-                                list.Add(node);
-                                stack.Push(Tuple.Create(node, list));
-                                drawEdgewithColor(this.graphVisualizer, list);
-                                this.graphVisualizer.FindNode(root).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Green;
-                                this.graphVisualizer.FindNode(target).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Red;
-                                wait(1000);
-                            }
-                        }
-                    }
-
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine($"ERROR : {e}");
+                    return stack;
                 }
                 return null;
+            }
+            public void exploreF(string start, string current, string target, HashSet<string> visited, ref List<string> stack, ref bool found)
+            {
+                stack.Add(current);
+                drawEdgewithColor(this.graphVisualizer, stack);
+                this.graphVisualizer.FindNode(start).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Green;
+                this.graphVisualizer.FindNode(target).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Red;
+                wait(1000);
+                visited.Add(current);
+                if (current==target)
+                {
+                    found = true;
+                    return;
+                }
+                foreach (var node in this.adjacent[current])
+                {
+                    if (!visited.Contains(node) && !found)
+                    {
+                        exploreF(start, node, target, visited, ref stack, ref found);
+                    }
+                }
+                if (!found)
+                {
+                    stack.RemoveAt(stack.Count-1);
+                }
             }
 
             /* Mengembalikan node yang berada 2 level dari simpul & bukan tetangga root */
