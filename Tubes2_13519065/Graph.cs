@@ -191,18 +191,20 @@ namespace Connect
                 }
                 return null;
             }
-            /* Mengembalikan list nama akun yang berada 2 level dari target */
-            public List<string> friendsRecommendation(string root)
+            /* Mengembalikan path untuk menuju akun rekomendasi
+               serta mengubah accRecommendations yang berada 2 level dari target */
+            public List<string> friendsRecommendation(string root, List<string> accRecommendations)
             {
                 Tuple<string, int> head;
-                List<string> accRecommendations = new List<string>();
+                List<string> path = new List<string>();
                 Queue<Tuple<string, int>> queue = new Queue<Tuple<string, int>>();
                 HashSet<string> visited = new HashSet<string>();
 
                 /* Masukkan root ke queue (nama node, level) */
                 queue.Enqueue(Tuple.Create(root, 0));
                 head = queue.Dequeue();
-                while (head.Item2 < 2) // Selama level kurang dari n
+                visited.Add(root);
+                while (head.Item2 < 2) // Selama level kurang dari 2
                 {
                     foreach (var node in this.adjacent[head.Item1])
                     {
@@ -211,6 +213,7 @@ namespace Connect
 	                    {
                             visited.Add(node);
                             queue.Enqueue(Tuple.Create(node, head.Item2+1));
+                            path.Add(node);
                     	}
                     }
                     head = queue.Dequeue();
@@ -225,7 +228,7 @@ namespace Connect
                         accRecommendations.Add(head.Item1);
                 	}
                 }
-                return accRecommendations;
+                return path;
             }
             /* Mengembalikan mutual friends dari root ke target */
             public List<string> getMutualFriends(string root, string target)

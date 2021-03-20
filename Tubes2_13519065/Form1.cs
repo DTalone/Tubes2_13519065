@@ -167,7 +167,8 @@ namespace Connect
                 {   
                     Graph.BFS b;
                     b = new Graph.BFS(this.graf, ref graph, ref panel_DrawGraph, ref viewer);
-                    List<string> recommendation = new List<string>(b.friendsRecommendation(comboBox1.Text));
+                    List<string> recommendation = new List<string>();
+                    List<string> path = new List<string>(b.friendsRecommendation(comboBox1.Text, recommendation));
                     List<string> mutuals;
                     string x = "Daftar rekomendasi teman untuk akun " + comboBox1.Text +":\r\n";
                     foreach(var account in recommendation)
@@ -191,6 +192,8 @@ namespace Connect
                             x = x + "\r\n";
                         }
                     }
+                    // Temp Buat testing Path
+                    x = x + String.Join(" → ", path)+ "\r\n";
                     textBox1.Text = x;
                 }
                 else if (comboBox3.Text == "Explore Friends")
