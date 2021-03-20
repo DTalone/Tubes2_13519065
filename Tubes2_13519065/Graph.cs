@@ -85,6 +85,7 @@ namespace Connect
 
                 this.totalEdges++;
             }
+            Console.WriteLine("Inisialisasi");
             foreach (KeyValuePair<string, List<string>> entry1 in this.adjacent)
             {
                 entry1.Value.Sort();
@@ -95,6 +96,13 @@ namespace Connect
         public Dictionary<string, List<string>> getAdjacent()
         {
             return this.adjacent;
+        }
+        public List<string> getMutualFriends(string root, string target)
+        {
+            List<string> adjRoot = this.adjacent[root];
+            List<string> adjTrgt = this.adjacent[target];
+            List<string> mutualFriends = adjRoot.Intersect(adjTrgt).ToList();
+            return mutualFriends;
         }
         public string exploreFriendsText(List<string> answer)
         {
@@ -135,6 +143,34 @@ namespace Connect
             }
             return x;
         }
+        
+
+        public string friendRecommendationText(string root, List<string> answer)
+        {
+            List<string> list = new List<string>();
+            string text = "";
+            foreach(var account in answer)
+            {
+                list = new List<string>(this.getMutualFriends(root, account));
+                text = text + "Nama akun: " + account + "\r\n";
+                if (answer == null)
+                {
+                    text = text + "Tidak dapat menghasilkan friend recommendation.\r\n";
+                    text = text + "Harap memperluas koneksi Anda!\r\n";
+                }
+                else
+                {
+                    text = text + list.Count.ToString() + " mutual friend";
+                    if (list.Count!=1)
+                    {
+                        text = text + "s";
+                    }
+                    text = text + ":\r\n";
+                    text = text + String.Join("\r\n", list) + "\r\n";
+                }
+            }
+            return text;
+        }
         public class BFS : Graph
         {
             public BFS(Graph graf, ref Microsoft.Msagl.Drawing.Graph graphVisualizer, ref Panel draw_graph, ref Microsoft.Msagl.GraphViewerGdi.GViewer viewer)
@@ -160,17 +196,17 @@ namespace Connect
                 tmp.Add(root);
                 queue.Enqueue(Tuple.Create(root, tmp));
                 visited.Add(root);
+
                 try {
                     while (queue.Count != 0)
                     {
                         path = queue.Peek();
-                        Console.WriteLine($"current Node: {path.Item1} , Total elements: {path.Item2.Count}");
+                        //Console.WriteLine($"current Node: {path.Item1} , Total elements: {path.Item2.Count}");
 
                         if (path.Item1 == target)
                         {
                             return path.Item2;
                         }
-                        Console.WriteLine($"ini apa {path.Item1}");
                         foreach (var node in this.adjacent[path.Item1])
                         {
                             tmp = new List<string>(path.Item2);
@@ -193,51 +229,66 @@ namespace Connect
             }
             /* Mengembalikan path untuk menuju akun rekomendasi
                serta mengubah accRecommendations yang berada 2 level dari target */
-            public List<string> friendsRecommendation(string root, List<string> accRecommendations)
+            public List<string> friendsRecommendation(string root)
             {
-                Tuple<string, int> head;
-                List<string> path = new List<string>();
-                Queue<Tuple<string, int>> queue = new Queue<Tuple<string, int>>();
+                Tuple<string, int, List<String>> head;
+                List<string> answer = new List<string>();
+                Queue<Tuple<string, int, List<String>>> queue = new Queue<Tuple<string, int, List<string>>>();
                 HashSet<string> visited = new HashSet<string>();
 
                 /* Masukkan root ke queue (nama node, level) */
-                queue.Enqueue(Tuple.Create(root, 0));
-                head = queue.Dequeue();
+                answer.Add(root);
+                queue.Enqueue(Tuple.Create(root, 0, answer)); ;
                 visited.Add(root);
-                while (head.Item2 < 2) // Selama level kurang dari 2
+                try
                 {
-                    foreach (var node in this.adjacent[head.Item1])
+                    while (queue.Count!=0) // Selama level kurang dari 2
                     {
-                        /* Masukkan simpul tetangga dari head jika belum dikunjungi */
-                        if (!visited.Contains(node))
-	                    {
-                            visited.Add(node);
-                            queue.Enqueue(Tuple.Create(node, head.Item2+1));
-                            path.Add(node);
-                    	}
+                        head = queue.Peek();
+                        if (head.Item2==2)
+                        {
+                            break;
+                        }
+
+                        foreach (var node in this.adjacent[head.Item1])
+                        {
+                            answer = new List<string> (head.Item3);
+                            /* Masukkan simpul tetangga dari head jika belum dikunjungi */
+                            if (!visited.Contains(node))
+	                        {
+                                visited.Add(node);
+                                answer.Add(node);
+                                queue.Enqueue(Tuple.Create(node, head.Item2+1,answer));
+                    	    }
+                        }
+                        queue.Dequeue();
                     }
-                    head = queue.Dequeue();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"ERROR : {e}");
                 }
                 /* EOP : Isi queue merupakan simpul level n dari root */
                 /* Masukkan ke solusi */
+                Console.WriteLine(queue.Peek().Item2 + " : " + string.Join("\t", queue.Peek().Item1));
                 if (queue.Count() > 0)
                 {
+                    answer = new List<string>();
                     while (queue.Count() != 0)
                 	{
-                        head = queue.Dequeue();
-                        accRecommendations.Add(head.Item1);
+                        head = queue.Peek();
+                        queue.Dequeue();
+                        answer.Add(head.Item1);
                 	}
+                    return answer;
                 }
-                return path;
+                else
+                {
+                    return null;
+                }
             }
             /* Mengembalikan mutual friends dari root ke target */
-            public List<string> getMutualFriends(string root, string target)
-            {
-                List<string> adjRoot = this.adjacent[root];
-                List<string> adjTrgt = this.adjacent[target];
-                List<string> mutualFriends = adjRoot.Intersect(adjTrgt).ToList();
-                return mutualFriends;
-            }
+
         }
 
         public class DFS : Graph

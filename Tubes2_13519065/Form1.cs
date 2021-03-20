@@ -27,6 +27,8 @@ namespace Connect
             int nWidthEllipse, // height of ellipse
             int nHeightEllipse // width of ellipse
         );
+        private string currentAccount;
+        private string targetAccount;
 
         Microsoft.Msagl.Drawing.Graph graph; // The graph that MSAGL accepts
         Microsoft.Msagl.GraphViewerGdi.GViewer viewer = new Microsoft.Msagl.GraphViewerGdi.GViewer();
@@ -164,46 +166,37 @@ namespace Connect
                     textBox1.Text = x;
                 }
                 else if (comboBox3.Text == "Friend Recommendation")
-                {   
+                {
                     Graph.BFS b;
                     b = new Graph.BFS(this.graf, ref graph, ref panel_DrawGraph, ref viewer);
                     List<string> recommendation = new List<string>();
-                    List<string> path = new List<string>(b.friendsRecommendation(comboBox1.Text, recommendation));
-                    List<string> mutuals;
+                    List<string> node = new List<string>(b.friendsRecommendation(comboBox1.Text));
                     string x = "Daftar rekomendasi teman untuk akun " + comboBox1.Text +":\r\n";
-                    foreach(var account in recommendation)
-                    {
-                        x = x + "Nama akun: " + account +"\r\n";
-                        mutuals = b.getMutualFriends(comboBox1.Text, account);
-                        if (mutuals.Count() > 1)
-                    	{
-                            x = x + mutuals.Count() + " mutual friends:\r\n";
-	                    }
-                        else
-	                    {
-                            x = x + mutuals.Count() + " mutual friend:\r\n";
-	                    }
-                        foreach (var mutualAcc in mutuals)
-                        {
-                            x = x + mutualAcc + "\r\n";
-                        }
-                        if(account != recommendation.Last())
-                        {
-                            x = x + "\r\n";
-                        }
-                    }
-                    // Temp Buat testing Path
-                    x = x + String.Join(" → ", path)+ "\r\n";
+                    x = x + b.friendRecommendationText(comboBox1.Text,node);
+
                     textBox1.Text = x;
+
                 }
                 else if (comboBox3.Text == "Explore Friends")
                 {
+                    Console.WriteLine("Awal Explore");
+                    foreach (KeyValuePair<string, List<string>> entry1 in graf.getAdjacent())
+                    {
+                        entry1.Value.Sort();
+                        Console.WriteLine(entry1.Key + " : " + string.Join("\t", entry1.Value));
+                    }
                     Graph.BFS b;
                     b = new Graph.BFS(this.graf, ref graph, ref panel_DrawGraph, ref viewer);
                     List<string> answer = new List<string>(b.exploreFriends(comboBox1.Text, comboBox2.Text));
                     string x = "Nama akun : " + comboBox1.Text + " dan " + comboBox2.Text + "\r\n";
                     x = x + b.exploreFriendsText(answer);
                     textBox1.Text = x;
+                    Console.WriteLine("Akhir Explore");
+                    foreach (KeyValuePair<string, List<string>> entry1 in graf.getAdjacent())
+                    {
+                        entry1.Value.Sort();
+                        Console.WriteLine(entry1.Key + " : " + string.Join("\t", entry1.Value));
+                    }
                 }
             }
 
@@ -231,7 +224,7 @@ namespace Connect
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            this.currentAccount = comboBox1.Text;
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -250,6 +243,11 @@ namespace Connect
         private void button3_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            this.targetAccount = comboBox2.Text;
         }
     }
 }
