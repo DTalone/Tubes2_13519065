@@ -159,6 +159,7 @@ namespace Connect
                 {
                     Graph.DFS d;
                     d = new Graph.DFS(this.graf, ref graph, ref panel_DrawGraph, ref viewer);
+                    d.setButton(ref button3);
                     List<string> answer = new List<string>(d.exploreFriends(comboBox1.Text, comboBox2.Text));
                     string x = "Nama akun : " + comboBox1.Text + " dan " + comboBox2.Text + "\r\n";
                     x = x + d.exploreFriendsText(answer);
@@ -177,6 +178,7 @@ namespace Connect
                 {
                     Graph.BFS b;
                     b = new Graph.BFS(this.graf, ref graph, ref panel_DrawGraph, ref viewer);
+                    b.setButton(ref button3);
                     List<string> recommendation = new List<string>();
                     List<string> node = new List<string>(b.friendsRecommendation(comboBox1.Text));
                     string x = "Daftar rekomendasi teman untuk akun " + comboBox1.Text +":\r\n";
@@ -195,6 +197,7 @@ namespace Connect
                     }
                     Graph.BFS b;
                     b = new Graph.BFS(this.graf, ref graph, ref panel_DrawGraph, ref viewer);
+                    b.setButton(ref button3);
                     List<string> answer = new List<string>(b.exploreFriends(comboBox1.Text, comboBox2.Text));
                     string x = "Nama akun : " + comboBox1.Text + " dan " + comboBox2.Text + "\r\n";
                     x = x + b.exploreFriendsText(answer);

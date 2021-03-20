@@ -15,7 +15,14 @@ namespace Connect
         private Microsoft.Msagl.Drawing.Graph graphVisualizer;
         private Microsoft.Msagl.GraphViewerGdi.GViewer viewer;
         private Panel panel_DrawGraph;
-       public Graph()
+        private Button next;
+        private bool nextClicked = false;
+        private void next_Click(object sender, EventArgs e)
+        {
+            Console.WriteLine("MASUKKKK!!!!!!!!!!");
+            this.nextClicked = true;
+        }
+        public Graph()
         {
             this.totalEdges = 0;
             this.totalNodes = 0;
@@ -47,6 +54,11 @@ namespace Connect
         {
             this.graphVisualizer.FindNode(a).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Black;
             drawContainer(this.graphVisualizer);
+        }
+        public void setButton(ref Button next )
+        {
+            this.next = next;
+            this.next.Click += new System.EventHandler(this.next_Click);
         }
         public void activateEdge(List<string> list)
         {
@@ -215,6 +227,8 @@ namespace Connect
                             {
                                 visited.Add(node);
                                 tmp.Add(node);
+                                while (nextClicked == false) { };
+                                //nextClicked = false;
                                 //activateEdge(List<string>)
                                 queue.Enqueue(Tuple.Create(node, tmp));
                                 //activateEdge(path.Item2);
@@ -260,6 +274,8 @@ namespace Connect
 	                        {
                                 visited.Add(node);
                                 answer.Add(node);
+                                //visualisasi graph(answer)
+                                //wait until when mouse clicked ()
                                 queue.Enqueue(Tuple.Create(node, head.Item2+1,answer));
                     	    }
                         }
@@ -335,8 +351,8 @@ namespace Connect
                             list = new List<string>(current.Item2);
                             if (!visited.Contains(node))
                             {
-                                stack.Push(Tuple.Create(node, list));
                                 list.Add(node);
+                                stack.Push(Tuple.Create(node, list));
                             }
                         }
                     }
