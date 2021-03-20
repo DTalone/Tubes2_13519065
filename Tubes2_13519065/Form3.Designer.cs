@@ -125,6 +125,7 @@ namespace Tubes2_13519065
             this.textBox3.Name = "textBox3";
             this.textBox3.Size = new System.Drawing.Size(316, 31);
             this.textBox3.TabIndex = 28;
+            this.textBox3.UseSystemPasswordChar = true;
             // 
             // button2
             // 

@@ -235,8 +235,7 @@ namespace Connect
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            button1.Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, button1.Width, button2.Height, 30, 30));
-            button2.Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, button2.Width, button2.Height, 30, 30));
+            button1.Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, button1.Width, button1.Height, 30, 30));
             button3.Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, button3.Width, button3.Height, 30, 30));
         }
 
