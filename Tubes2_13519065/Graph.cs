@@ -95,6 +95,45 @@ namespace Connect
         {
             return this.adjacent;
         }
+        public string exploreFriendsText(List<string> answer)
+        {
+            string x = "";
+            if (answer == null)
+            {
+                x = x + "Tidak ada jalur koneksi yang tersedia.\r\n";
+                x = x + "Anda harus membangun jalur itu sendiri.\r\n";
+            }
+            else
+            {
+                x = x + String.Join(" → ", answer) + "\r\n";
+                if (answer.Count == 1)
+                {
+                    x = x + "Its node ";
+                }
+                else if (answer.Count == 2)
+                {
+                    x = x + "mutual friend ";
+                }
+                else if (answer.Count == 3)
+                {
+                    x = x + (answer.Count - 2).ToString() + "st-degree ";
+                }
+                else if (answer.Count == 4)
+                {
+                    x = x + (answer.Count - 2).ToString() + "nd-degree ";
+                }
+                else if (answer.Count == 5)
+                {
+                    x = x + (answer.Count - 2).ToString() + "rd-degree ";
+                }
+                else
+                {
+                    x = x + (answer.Count - 2).ToString() + "th-degree ";
+                }
+                x = x + "connection.\r\n";
+            }
+            return x;
+        }
         public class BFS : Graph
         {
             public BFS(Graph graf, ref Microsoft.Msagl.Drawing.Graph graphVisualizer, ref Panel draw_graph, ref Microsoft.Msagl.GraphViewerGdi.GViewer viewer)
