@@ -88,6 +88,7 @@ namespace Connect
             foreach (KeyValuePair<string, List<string>> entry1 in this.adjacent)
             {
                 entry1.Value.Sort();
+                Console.WriteLine(entry1.Key+" : "+string.Join("\t", entry1.Value));
             }
             this.totalNodes = this.adjacent.Count;
         }
@@ -238,8 +239,57 @@ namespace Connect
 
         public class DFS : Graph
         {
+            public DFS(Graph graf, ref Microsoft.Msagl.Drawing.Graph graphVisualizer, ref Panel draw_graph, ref Microsoft.Msagl.GraphViewerGdi.GViewer viewer)
+            {
+                this.adjacent = graf.adjacent;
+                this.totalEdges = graf.totalEdges;
+                this.totalNodes = graf.totalNodes;
+                this.graphVisualizer = graphVisualizer;
+                this.viewer = viewer;
+                this.panel_DrawGraph = draw_graph;
+
+            }
             public string search(string root, string target)
             {
+                return null;
+            }
+
+            public List<string> exploreFriends(string root, string target)
+            {
+                List<string> list = new List<string>();
+                Stack<Tuple<string, List<string>>> stack = new Stack<Tuple<string, List<string>>>();
+                HashSet<string> visited = new HashSet<string>();
+                list.Add(root);
+                stack.Push(Tuple.Create(root, list));
+                Tuple<string, List<string>> current;
+                try
+                {
+                    while(stack.Count!=0)
+                    {
+                        current = stack.Peek();
+                        stack.Pop();
+                        visited.Add(current.Item1);
+                        Console.WriteLine($"current Node: {current.Item1} , Total elements: {current.Item2.Count}");
+                        if (current.Item1==target)
+                        {
+                            return current.Item2;
+                        }
+                        foreach (var node in this.adjacent[current.Item1])
+                        {
+                            list = new List<string>(current.Item2);
+                            if (!visited.Contains(node))
+                            {
+                                stack.Push(Tuple.Create(node, list));
+                                list.Add(node);
+                            }
+                        }
+                    }
+
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"ERROR : {e}");
+                }
                 return null;
             }
         }

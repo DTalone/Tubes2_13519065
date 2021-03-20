@@ -147,7 +147,11 @@ namespace Connect
                 }
                 else if (comboBox3.Text == "Explore Friends")
                 {
-                    string x = "DFS3";
+                    Graph.DFS d;
+                    d = new Graph.DFS(this.graf, ref graph, ref panel_DrawGraph, ref viewer);
+                    List<string> answer = new List<string>(d.exploreFriends(comboBox1.Text, comboBox2.Text));
+                    string x = "Nama akun : " + comboBox1.Text + " dan " + comboBox2.Text + "\r\n";
+                    x = x + d.exploreFriendsText(answer);
                     textBox1.Text = x;
                 }
 
