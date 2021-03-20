@@ -48,6 +48,14 @@ namespace Connect
             this.graphVisualizer.FindNode(a).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Black;
             drawContainer(this.graphVisualizer);
         }
+        public void activateEdge(List<string> list)
+        {
+            for (var i=0;i<list.Count;i++)
+            {
+                this.graphVisualizer.FindNode(list[i]).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Green;
+                drawContainer(this.graphVisualizer);
+            }
+        }
         public Graph(StreamReader file)
         {
             this.totalNodes = 0;
@@ -77,6 +85,10 @@ namespace Connect
 
                 this.totalEdges++;
             }
+            foreach (KeyValuePair<string, List<string>> entry1 in this.adjacent)
+            {
+                entry1.Value.Sort();
+            }
             this.totalNodes = this.adjacent.Count;
         }
         public Dictionary<string, List<string>> getAdjacent()
@@ -101,31 +113,41 @@ namespace Connect
             }
             public List<string> exploreFriends(string root, string target)
             {
-                Queue<Tuple<string, List<string>>> temp = new Queue<Tuple<string, List<string>>>();
+                Queue<Tuple<string, List<string>>> queue = new Queue<Tuple<string, List<string>>>();
                 Tuple<string, List<string>> path;
                 HashSet<string> visited = new HashSet<string>();
                 List<string> tmp= new List<string>();
                 tmp.Add(root);
-                temp.Enqueue(Tuple.Create(root, tmp));
-                while (temp.Count != 0)
-                {
-                    path = temp.Dequeue();
-
-                    if (path.Item1 == target && path.Item2.Count % 2 == 1)
+                queue.Enqueue(Tuple.Create(root, tmp));
+                visited.Add(root);
+                try {
+                    while (queue.Count != 0)
                     {
-                        return path.Item2;
-                    }
+                        path = queue.Peek();
+                        Console.WriteLine($"current Node: {path.Item1} , Total elements: {path.Item2.Count}");
 
-                    foreach (var node in this.adjacent[path.Item1])
-                    {
-                        if (!visited.Contains(node))
+                        if (path.Item1 == target)
                         {
-                            visited.Add(node);
-                            path.Item2.Add(node);
-                            temp.Enqueue(Tuple.Create(root, path.Item2));
-                            //activateEdge(path.Item2);
+                            return path.Item2;
                         }
+                        Console.WriteLine($"ini apa {path.Item1}");
+                        foreach (var node in this.adjacent[path.Item1])
+                        {
+                            tmp = new List<string>(path.Item2);
+                            if (!visited.Contains(node))
+                            {
+                                visited.Add(node);
+                                tmp.Add(node);
+                                queue.Enqueue(Tuple.Create(node, tmp));
+                                //activateEdge(path.Item2);
+                            }
+                        }
+                        queue.Dequeue();
                     }
+                }
+                catch(Exception e)
+                {
+                    Console.WriteLine($"ERROR : {e}");
                 }
                 return null;
             }
