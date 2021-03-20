@@ -14,9 +14,10 @@ using System.Runtime.InteropServices;
 
 namespace Connect
 {
-
+    
     public partial class Form1 : Form
     {
+        
         [DllImport("Gdi32.dll", EntryPoint = "CreateRoundRectRgn")]
         private static extern System.IntPtr CreateRoundRectRgn
         (
@@ -37,6 +38,8 @@ namespace Connect
         public Form1()
         {
             InitializeComponent();
+            button1.Enabled = false;
+            button3.Enabled = false;
         }
 
         private void button_LoadFile_Click(object sender, EventArgs e)
@@ -69,6 +72,8 @@ namespace Connect
                             comboBox2.Items.Add(entry1.Key);
                         }
                             DrawGraph(this.graf);
+                            button1.Enabled = true;
+                            button3.Enabled = true;
                     }
                 }
             }
