@@ -74,6 +74,7 @@ namespace Connect
                             DrawGraph(this.graf);
                             button1.Enabled = true;
                             button3.Enabled = true;
+                            comboBox3.SelectedItem = "Show Graph";
                     }
                 }
             }
@@ -141,7 +142,9 @@ namespace Connect
         {
             // Bikin fungsi dfs bfs, trs panggil disini. Ini button submit ceunah wkwk 
             if (radioButton1.Checked)
+            
             {
+                
                 if (comboBox3.Text == "Show Graph")
                 {
                     string x = "DFS1";
