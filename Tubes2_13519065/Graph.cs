@@ -70,15 +70,15 @@ namespace Connect
             }
             public Queue<Tuple<string, string>> exploreFriends(string root, string target)
             {
-                Queue<Tuple<string, Queue<Tuple<string,string>>>> temp = new Queue<Tuple<string, Queue<Tuple<string, string>>>>();
+                Queue<Tuple<string, Queue<Tuple<string, string>>>> temp = new Queue<Tuple<string, Queue<Tuple<string, string>>>>();
                 Tuple<string, Queue<Tuple<string, string>>> path;
-                HashSet<string> visited= new HashSet<string>();
+                HashSet<string> visited = new HashSet<string>();
                 temp.Enqueue(Tuple.Create(root, new Queue<Tuple<string, string>>()));
-                while (temp.Count!=0)
+                while (temp.Count != 0)
                 {
-                    path=temp.Dequeue();
-                    
-                    if (path.Item1==target && path.Item2.Count%2==1)
+                    path = temp.Dequeue();
+
+                    if (path.Item1 == target && path.Item2.Count % 2 == 1)
                     {
                         return path.Item2;
                     }
@@ -90,10 +90,42 @@ namespace Connect
                             visited.Add(node);
                             path.Item2.Enqueue(Tuple.Create(path.Item1, node));
                             temp.Enqueue(Tuple.Create(root, path.Item2));
-                        }       
+                        }
                     }
                 }
                 return null;
+            }
+            public void friendsRecommendation(string root, Dictionary<string, List<string>> adjacent, List<List<string>> queue, List<List<string>> solution)
+            {
+                if (queue.ElementAt(0).Count <= 3) // Jika level < 2
+                {
+                    if (queue.ElementAt(0).Count == 3) // Jika level == 2, masukkan ke solution
+                    {
+                        solution.Add(queue.ElementAt(0));
+                    }
+
+                    List<string> route; // Rute graf; [A,B,C] = A->B->C
+                    foreach (string node in adjacent[root].OrderBy(node => node).ToList())
+                    {
+                        route = queue.ElementAt(0);     // Ambil elemen pertama queue & tambahkan simpul tetangga
+                        route.Add(node);
+                        queue.Add(route);               // Tambahkan ke belakang queue
+                        route.Clear();
+                    }
+                    
+                    queue.RemoveAt(0);     // Dequeue
+                    adjacent.Remove(root); // Hapuskan simpul root
+                    List<string> nodeList = adjacent.Keys.ToList();
+                    foreach (string node in nodeList)
+                    {
+                        // Hapuskan sisi root yang berhubungan dengan simpul lain
+                        adjacent[node].Remove(root);
+                    }
+
+                    List<string> nextNode = queue.ElementAt(0); // Assign node yang ingin diproses
+                    string _root = queue.ElementAt(0).Last();     // Node yang ingin diproses terdapat di akhir rute
+                    friendsRecommendation(_root, adjacent, queue, solution);
+                }
             }
         }
 
