@@ -43,6 +43,11 @@ namespace Connect
             panel_DrawGraph.Controls.Add(viewer);
             panel_DrawGraph.ResumeLayout();
         }
+        public void ganti(string a)
+        {
+            this.graphVisualizer.FindNode(a).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Black;
+            drawContainer(this.graphVisualizer);
+        }
         public Graph(StreamReader file)
         {
             this.totalNodes = 0;
@@ -90,21 +95,18 @@ namespace Connect
                 this.panel_DrawGraph = draw_graph;
 
             }
-            public void ganti(string a)
-            {
-                this.graphVisualizer.FindNode(a).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Black;
-                drawContainer(this.graphVisualizer);
-            }
             public string search(string root, string target)
             {
                 return null;
             }
-            public Queue<Tuple<string, string>> exploreFriends(string root, string target)
+            public List<string> exploreFriends(string root, string target)
             {
-                Queue<Tuple<string, Queue<Tuple<string, string>>>> temp = new Queue<Tuple<string, Queue<Tuple<string, string>>>>();
-                Tuple<string, Queue<Tuple<string, string>>> path;
+                Queue<Tuple<string, List<string>>> temp = new Queue<Tuple<string, List<string>>>();
+                Tuple<string, List<string>> path;
                 HashSet<string> visited = new HashSet<string>();
-                temp.Enqueue(Tuple.Create(root, new Queue<Tuple<string, string>>()));
+                List<string> tmp= new List<string>();
+                tmp.Add(root);
+                temp.Enqueue(Tuple.Create(root, tmp));
                 while (temp.Count != 0)
                 {
                     path = temp.Dequeue();
@@ -119,8 +121,9 @@ namespace Connect
                         if (!visited.Contains(node))
                         {
                             visited.Add(node);
-                            path.Item2.Enqueue(Tuple.Create(path.Item1, node));
+                            path.Item2.Add(node);
                             temp.Enqueue(Tuple.Create(root, path.Item2));
+                            //activateEdge(path.Item2);
                         }
                     }
                 }
