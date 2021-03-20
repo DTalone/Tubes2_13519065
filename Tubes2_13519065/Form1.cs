@@ -14,9 +14,10 @@ using System.Runtime.InteropServices;
 
 namespace Connect
 {
-
+    
     public partial class Form1 : Form
     {
+        
         [DllImport("Gdi32.dll", EntryPoint = "CreateRoundRectRgn")]
         private static extern System.IntPtr CreateRoundRectRgn
         (
@@ -37,6 +38,8 @@ namespace Connect
         public Form1()
         {
             InitializeComponent();
+            button1.Enabled = false;
+            button3.Enabled = false;
         }
 
         private void button_LoadFile_Click(object sender, EventArgs e)
@@ -69,6 +72,9 @@ namespace Connect
                             comboBox2.Items.Add(entry1.Key);
                         }
                             DrawGraph(this.graf);
+                            button1.Enabled = true;
+                            button3.Enabled = true;
+                            comboBox3.SelectedItem = "Show Graph";
                     }
                 }
             }
@@ -136,7 +142,9 @@ namespace Connect
         {
             // Bikin fungsi dfs bfs, trs panggil disini. Ini button submit ceunah wkwk 
             if (radioButton1.Checked)
+            
             {
+                
                 if (comboBox3.Text == "Show Graph")
                 {
                     string x = "DFS1";
@@ -157,6 +165,7 @@ namespace Connect
                 {
                     Graph.DFS d;
                     d = new Graph.DFS(this.graf, ref graph, ref panel_DrawGraph, ref viewer);
+                    d.setButton(ref button3);
                     List<string> answer = new List<string>(d.exploreFriends(comboBox1.Text, comboBox2.Text));
                     string x = "Nama akun : " + comboBox1.Text + " dan " + comboBox2.Text + "\r\n";
                     x = x + d.exploreFriendsText(answer);
@@ -175,6 +184,7 @@ namespace Connect
                 {
                     Graph.BFS b;
                     b = new Graph.BFS(this.graf, ref graph, ref panel_DrawGraph, ref viewer);
+                    b.setButton(ref button3);
                     List<string> recommendation = new List<string>();
                     List<string> node = new List<string>(b.friendsRecommendation(comboBox1.Text));
                     string x = "Daftar rekomendasi teman untuk akun " + comboBox1.Text +":\r\n";
@@ -193,6 +203,7 @@ namespace Connect
                     }
                     Graph.BFS b;
                     b = new Graph.BFS(this.graf, ref graph, ref panel_DrawGraph, ref viewer);
+                    b.setButton(ref button3);
                     List<string> answer = new List<string>(b.exploreFriends(comboBox1.Text, comboBox2.Text));
                     string x = "Nama akun : " + comboBox1.Text + " dan " + comboBox2.Text + "\r\n";
                     x = x + b.exploreFriendsText(answer);
