@@ -294,6 +294,8 @@ namespace Connect
             /* Mengembalikan node yang berada 2 level dari simpul & bukan tetangga root */
             public List<string> friendsRecommendation(string root)
             {
+                resetEdgeColor(this.graphVisualizer);
+                resetNodeColor(this.graphVisualizer);
                 this.graphVisualizer.FindNode(root).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Green;
                 Tuple<string, List<String>> head;
                 List<string> path = new List<string>(); // Untuk visualisasi rute menuju simpul level 2
@@ -309,34 +311,42 @@ namespace Connect
                 try
                 {
                     head = queue.Peek();
-                    while (head.Item2.Count <= 3) // Selama belum melebihi level 2
+                    while (queue.Count != 0) // Selama queue masih isi
                     {
                         if (head.Item2.Count == 3) // Jika berada di level 2 (memiliki panjang rute = 3)
                     	{
                             // Masukkan simpul level 2 ke answer
                             answer.Add(head.Item2.Last());
                             path_list.Add(path);
+                            this.graphVisualizer.FindNode(root).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Green;
+                            this.graphVisualizer.FindNode(head.Item2.Last()).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Red;
 	                    }
 
-                        foreach (var node in this.adjacent[head.Item1].OrderBy(simpul => simpul).ToList())
+                        else
                         {
-                            path = new List<string> (head.Item2);
-                            /* Untuk setiap simpul tetangga 
-                             * masukkan simpul tetangga jika belum dikunjungi */
-                            if (!visited.Contains(node))
-	                        {
-                                visited.Add(node);
-                                path.Add(node);
-                                drawEdgewithColor(this.graphVisualizer, path);
-                                this.graphVisualizer.FindNode(root).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Green;
-                                wait(1000);
-                                queue.Enqueue(Tuple.Create(node, path));
-                    	    }
+                            foreach (var node in this.adjacent[head.Item1].OrderBy(simpul => simpul).ToList())
+                            {
+                                path = new List<string> (head.Item2);
+                                /* Untuk setiap simpul tetangga 
+                                 * masukkan simpul tetangga jika belum dikunjungi */
+                                if (!visited.Contains(node))
+	                            {
+                                    visited.Add(node);
+                                    path.Add(node);
+                                    drawEdgewithColor(this.graphVisualizer, path);
+                                    this.graphVisualizer.FindNode(root).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Green;
+                                    wait(1000);
+                                    queue.Enqueue(Tuple.Create(node, path));
+                    	        }
+                            }
                         }
                         queue.Dequeue();
-                        head = queue.Peek();
+                        if(queue.Count != 0)
+                        {
+                            head = queue.Peek();
+                        }                        
                     }
-                    /* EOP : simpul melebihi level 2 */
+                    /* EOP : queue kosong */
                 }
                 catch (Exception e)
                 {
@@ -426,52 +436,54 @@ namespace Connect
             /* Mengembalikan node yang berada 2 level dari simpul & bukan tetangga root */
             public List<string> friendsRecommendation(string root)
             {
-                Tuple<string, int, List<String>> top;
-                List<string> currRoute = new List<string>();
+                resetEdgeColor(this.graphVisualizer);
+                resetNodeColor(this.graphVisualizer);
+                List<string> stack = new List<string>();
+                HashSet<string> visited = new HashSet<string>();                
+                this.graphVisualizer.FindNode(root).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Green;
                 List<string> answer = new List<string>();
-                Stack<Tuple<string, int, List<String>>> stack = new Stack<Tuple<string, int, List<string>>>();
-                HashSet<string> visited = new HashSet<string>();
 
-                /* Masukkan root ke stack (nama node, level, rute) */
-                currRoute.Add(root);
-                stack.Push(Tuple.Create(root, 0, currRoute));
-                visited.Add(root);
-                try
+                friendsRecommendation1(root, root, 0, visited, ref stack, ref answer);
+                if (answer.Count > 0)
                 {
-                    while (stack.Count!=0) // Selama stack tidak kosong
+                    this.graphVisualizer.FindNode(root).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Green;
+                    foreach (var node in answer)
+                	{
+                           this.graphVisualizer.FindNode(node).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Red;
+                	}
+                    return answer;
+                }
+                return null;
+            }
+
+            public void friendsRecommendation1(string root, string current, int level, HashSet<string> visited, ref List<string> stack, ref List<string> answer)
+            {
+                resetEdgeColor(this.graphVisualizer);
+                resetNodeColor(this.graphVisualizer);
+                stack.Add(current);
+                drawEdgewithColor(this.graphVisualizer, stack);
+                this.graphVisualizer.FindNode(root).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Green;
+                wait(1000);
+                visited.Add(current);
+                if (level == 2)
+            	{
+                    if (!this.adjacent[root].Contains(current) && !answer.Contains(current))
+	                {
+                        answer.Add(current);
+                	}                    
+                    stack.RemoveAt(stack.Count-1);
+                    visited.Remove(current);
+                    return;
+            	}
+                foreach (var node in this.adjacent[current])
+                {
+                    if (!visited.Contains(node))
                     {
-                        top = stack.Pop();
-                        visited.Add(top.Item1);
-                        if (top.Item2 < 2)
-                        {
-                            foreach (var node in this.adjacent[top.Item1].OrderByDescending(simpul => simpul).ToList())
-                            {
-                                currRoute = new List<string> (top.Item3);
-                                /* Untuk setiap simpul tetangga
-                                 * masukkan simpul tetangga jika belum dikunjungi */
-                                if (!visited.Contains(node))
-                                {
-                                    currRoute.Add(node);
-                                    stack.Push(Tuple.Create(node, top.Item2+1,currRoute));
-                                }
-                            }
-                        }
-                        else // Jika simpul level 2
-                        {
-                            /* Masukkan ke solusi, jika bukan tetangga root */
-                            if (!this.adjacent[root].Contains(top.Item1))
-                            {
-                                answer.Add(top.Item1);
-                            }
-                        }
+                        friendsRecommendation1(root, node, level+1, visited, ref stack, ref answer);
                     }
-                    /* EOP : Isi stack kosong */
                 }
-                catch (Exception e)
-                {
-                    Console.WriteLine($"ERROR : {e}");
-                }
-                return answer;
+                stack.RemoveAt(stack.Count-1);
+                visited.Remove(current);
             }
         }
     }
