@@ -305,60 +305,63 @@ namespace Connect
             /* Mengembalikan node yang berada 2 level dari simpul & bukan tetangga root */
             public List<string> friendsRecommendation(string root)
             {
-                Tuple<string, int, List<String>> head;
-                List<string> answer = new List<string>();
-                Queue<Tuple<string, int, List<String>>> queue = new Queue<Tuple<string, int, List<string>>>();
+                this.graphVisualizer.FindNode(root).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Green;
+                Tuple<string, List<String>> head;
+                List<string> path = new List<string>(); // Untuk visualisasi rute menuju simpul level 2
+                Queue<Tuple<string, List<String>>> queue = new Queue<Tuple<string, List<string>>>();
                 HashSet<string> visited = new HashSet<string>();
+                List<string> answer = new List<string>();
+                List<List<string>> path_list = new List<List<string>>();
 
-                /* Masukkan root ke queue (nama node, level, rute) */
-                answer.Add(root);
-                queue.Enqueue(Tuple.Create(root, 0, answer)); ;
+                /* Masukkan root ke queue (nama node, rute) */
+                path.Add(root);
+                queue.Enqueue(Tuple.Create(root, path)); ;
                 visited.Add(root);
                 try
                 {
-                    while (queue.Count != 0) // Selama queue tidak kosong
+                    head = queue.Peek();
+                    while (head.Item2.Count <= 3) // Selama belum melebihi level 2
                     {
-                        head = queue.Peek();
-                        if (head.Item2 == 2)
-                        {
-                            /* Jika isi queue sudah level 2, keluar dari loop */
-                            break;
-                        }
+                        if (head.Item2.Count == 3) // Jika berada di level 2 (memiliki panjang rute = 3)
+                    	{
+                            // Masukkan simpul level 2 ke answer
+                            answer.Add(head.Item2.Last());
+                            path_list.Add(path);
+	                    }
 
                         foreach (var node in this.adjacent[head.Item1].OrderBy(simpul => simpul).ToList())
                         {
-                            answer = new List<string>(head.Item3);
+                            path = new List<string> (head.Item2);
                             /* Untuk setiap simpul tetangga 
                              * masukkan simpul tetangga jika belum dikunjungi */
                             if (!visited.Contains(node))
-                            {
+	                        {
                                 visited.Add(node);
-                                answer.Add(node);
-                                //visualisasi graph(answer)
-                                //wait until when mouse clicked ()
-                                queue.Enqueue(Tuple.Create(node, head.Item2 + 1, answer));
-                            }
+                                path.Add(node);
+                                drawEdgewithColor(this.graphVisualizer, path);
+                                this.graphVisualizer.FindNode(root).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Green;
+                                wait(1000);
+                                queue.Enqueue(Tuple.Create(node, path));
+                    	    }
                         }
                         queue.Dequeue();
+                        head = queue.Peek();
                     }
-                    /* EOP : Isi queue merupakan simpul level 2 dari root */
+                    /* EOP : simpul melebihi level 2 */
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine($"ERROR : {e}");
                 }
-
-                Console.WriteLine(queue.Peek().Item2 + " : " + string.Join("\t", queue.Peek().Item1));
-                if (queue.Count() > 0)
-                {
-                    /* Masukkan ke solusi */
-                    answer = new List<string>();
-                    while (queue.Count() != 0)
-                    {
-                        head = queue.Peek();
-                        queue.Dequeue();
-                        answer.Add(head.Item1);
-                    }
+                
+                if (answer.Count() > 0) // Jika terdapat simpul level 2
+                {    
+                    foreach (var node in answer)
+                	{
+                        // Warnain node level 2
+                        this.graphVisualizer.FindNode(node).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Red;
+                	}
+                    this.graphVisualizer.FindNode(root).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Green;
                     return answer;
                 }
                 else
