@@ -93,7 +93,10 @@ namespace Connect
                 {
                     if (!visited.Contains(Tuple.Create(entry1.Key, entry2)) && !visited.Contains(Tuple.Create(entry2, entry1.Key)))
                     {
-                        graph.AddEdge(entry1.Key,entry2).Attr.ArrowheadAtTarget = Microsoft.Msagl.Drawing.ArrowStyle.None;
+                        Microsoft.Msagl.Drawing.Edge e;
+                        e = graph.AddEdge(entry1.Key, entry2);
+                        e.Attr.ArrowheadAtTarget = Microsoft.Msagl.Drawing.ArrowStyle.None;
+                        e.Attr.Id = entry1.Key + entry2;
                     }
                     visited.Add(Tuple.Create(entry1.Key, entry2));
                 }

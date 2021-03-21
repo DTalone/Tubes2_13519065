@@ -26,35 +26,33 @@ namespace Connect
         {
             return this.totalEdges;
         }
-        public void drawFirstGraph()
+        public void resetNodeColor(Microsoft.Msagl.Drawing.Graph graph)
         {
-            List<Tuple<string, string>> visited = new List<Tuple<string, string>>();
-            this.graphVisualizer = new Microsoft.Msagl.Drawing.Graph("graph");
-            foreach (KeyValuePair<string, List<string>> entry1 in this.adjacent)
+            foreach (var node in graph.Nodes)
             {
-                // do something with entry.Value or entry.Key
-                foreach (var entry2 in entry1.Value)
-                {
-                    if (!visited.Contains(Tuple.Create(entry1.Key, entry2)) || !visited.Contains(Tuple.Create(entry2, entry1.Key)))
-                    {
-                        this.graphVisualizer.AddEdge(entry1.Key, entry2).Attr.ArrowheadAtTarget = Microsoft.Msagl.Drawing.ArrowStyle.None;
-                    }
-                    visited.Add(Tuple.Create(entry1.Key, entry2));
-                }
+                node.Attr.FillColor = Microsoft.Msagl.Drawing.Color.White;
             }
-            drawContainer(this.graphVisualizer);
         }
-        
+        public void resetEdgeColor(Microsoft.Msagl.Drawing.Graph graph)
+        {
+            foreach (var edge in graph.Edges)
+            {
+                edge.Attr.Color = Microsoft.Msagl.Drawing.Color.Black;
+            }
+        }
         public void drawEdgewithColor(Microsoft.Msagl.Drawing.Graph graph, List<string> list)
         {
             List<Tuple<string, string>> visited = new List<Tuple<string, string>>();
             Node node;
-            this.graphVisualizer = new Microsoft.Msagl.Drawing.Graph();
+            Edge edge;
             for (int i=0;i<list.Count-1;i++)
             {
-                Edge tmp = this.graphVisualizer.AddEdge(list[i], list[i + 1]);
-                tmp.Attr.ArrowheadAtTarget = Microsoft.Msagl.Drawing.ArrowStyle.None;
-                tmp.Attr.Color = Microsoft.Msagl.Drawing.Color.Orange;
+                edge = this.graphVisualizer.EdgeById(list[i]+list[i+1]);
+                if (edge==null)
+                {
+                    edge = this.graphVisualizer.EdgeById(list[i + 1]+list[i]);
+                }
+                edge.Attr.Color = Microsoft.Msagl.Drawing.Color.Orange;
                 node = this.graphVisualizer.FindNode(list[i]);
                 if (node!=null)
                 {
@@ -66,18 +64,6 @@ namespace Connect
             if (node != null)
             {
                 node.Attr.FillColor = Microsoft.Msagl.Drawing.Color.Yellow;
-            }
-            foreach (KeyValuePair<string, List<string>> entry1 in this.adjacent)
-            {
-                // do something with entry.Value or entry.Key
-                foreach (var entry2 in entry1.Value)
-                {
-                    if (!visited.Contains(Tuple.Create(entry1.Key, entry2)) && !visited.Contains(Tuple.Create(entry2, entry1.Key)))
-                    {
-                        this.graphVisualizer.AddEdge(entry1.Key, entry2).Attr.ArrowheadAtTarget = Microsoft.Msagl.Drawing.ArrowStyle.None;
-                    }
-                    visited.Add(Tuple.Create(entry1.Key, entry2));
-                }
             }
             drawContainer(this.graphVisualizer);
         }
@@ -251,7 +237,6 @@ namespace Connect
                 this.graphVisualizer = graphVisualizer;
                 this.viewer = viewer;
                 this.panel_DrawGraph = draw_graph;
-                drawFirstGraph();
             }
             public string search(string root, string target)
             {
@@ -259,6 +244,8 @@ namespace Connect
             }
             public List<string> exploreFriends(string root, string target)
             {
+                resetEdgeColor(this.graphVisualizer);
+                resetNodeColor(this.graphVisualizer);
                 this.graphVisualizer.FindNode(root).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Green;
                 this.graphVisualizer.FindNode(target).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Red;
                 Queue<Tuple<string, List<string>>> queue = new Queue<Tuple<string, List<string>>>();
@@ -283,6 +270,8 @@ namespace Connect
                         {
                             return path.Item2;
                         }
+                        resetEdgeColor(this.graphVisualizer);
+                        resetNodeColor(this.graphVisualizer);
                         foreach (var node in this.adjacent[path.Item1])
                         {
                             tmp = new List<string>(path.Item2);
@@ -382,8 +371,6 @@ namespace Connect
                 this.graphVisualizer = graphVisualizer;
                 this.viewer = viewer;
                 this.panel_DrawGraph = draw_graph;
-                this.graphVisualizer = new Microsoft.Msagl.Drawing.Graph();
-                drawFirstGraph();
             }
             public string search(string root, string target)
             {
@@ -393,12 +380,17 @@ namespace Connect
             {
                 List<string> stack = new List<string>();
                 HashSet<string> visited = new HashSet<string>();
+                resetEdgeColor(this.graphVisualizer);
+                resetNodeColor(this.graphVisualizer);
                 this.graphVisualizer.FindNode(root).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Green;
                 this.graphVisualizer.FindNode(target).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Red;
                 bool found = false;
                 exploreF(root, root, target, visited, ref stack, ref found);
                 if (found)
                 {
+                    drawEdgewithColor(this.graphVisualizer, stack);
+                    this.graphVisualizer.FindNode(root).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Green;
+                    this.graphVisualizer.FindNode(target).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Red;
                     return stack;
                 }
                 return null;
@@ -410,6 +402,8 @@ namespace Connect
                 this.graphVisualizer.FindNode(start).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Green;
                 this.graphVisualizer.FindNode(target).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Red;
                 wait(1000);
+                resetEdgeColor(this.graphVisualizer);
+                resetNodeColor(this.graphVisualizer);
                 visited.Add(current);
                 if (current==target)
                 {
