@@ -39,7 +39,6 @@ namespace Connect
         {
             InitializeComponent();
             button1.Enabled = false;
-            button3.Enabled = false;
         }
 
         private void button_LoadFile_Click(object sender, EventArgs e)
@@ -73,7 +72,6 @@ namespace Connect
                         }
                             DrawGraph(this.graf);
                             button1.Enabled = true;
-                            button3.Enabled = true;
                             comboBox3.SelectedItem = "Show Graph";
                     }
                 }
@@ -242,12 +240,6 @@ namespace Connect
         private void Form1_Load(object sender, EventArgs e)
         {
             button1.Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, button1.Width, button1.Height, 30, 30));
-            button3.Region = Region.FromHrgn(CreateRoundRectRgn(0, 0, button3.Width, button3.Height, 30, 30));
-        }
-
-        private void button3_Click(object sender, EventArgs e)
-        {
-
         }
 
         private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
