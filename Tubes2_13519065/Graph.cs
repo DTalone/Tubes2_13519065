@@ -221,7 +221,6 @@ namespace Connect
                     }
                     text = text + ":\r\n";
                     text = text + String.Join("\r\n", list) + "\r\n";
-                    text = text + "\r\n";
                 }
                 text = text + "\r\n";
             }
@@ -318,8 +317,6 @@ namespace Connect
                             // Masukkan simpul level 2 ke answer
                             answer.Add(head.Item2.Last());
                             path_list.Add(path);
-                            this.graphVisualizer.FindNode(root).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Green;
-                            this.graphVisualizer.FindNode(head.Item2.Last()).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Red;
 	                    }
 
                         else
@@ -355,9 +352,12 @@ namespace Connect
                 
                 if (answer.Count() > 0) // Jika terdapat simpul level 2
                 {    
+                    foreach (var _path in path_list)
+                    {
+                        drawEdgewithColor(this.graphVisualizer, _path);
+                    }
                     foreach (var node in answer)
                 	{
-                        // Warnain node level 2
                         this.graphVisualizer.FindNode(node).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Red;
                 	}
                     this.graphVisualizer.FindNode(root).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Green;
@@ -442,22 +442,30 @@ namespace Connect
                 HashSet<string> visited = new HashSet<string>();                
                 this.graphVisualizer.FindNode(root).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Green;
                 List<string> answer = new List<string>();
+                List<List<string>> path_list = new List<List<string>>();
 
-                friendsRecommendation1(root, root, 0, visited, ref stack, ref answer);
+                friendsRecommendation1(root, root, 0, visited, stack, ref answer, ref path_list);
                 if (answer.Count > 0)
                 {
-                    this.graphVisualizer.FindNode(root).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Green;
+                    resetEdgeColor(this.graphVisualizer);
+                    resetNodeColor(this.graphVisualizer);
+                    foreach (var _path in path_list)
+                    {
+                        drawEdgewithColor(this.graphVisualizer, _path);
+                    }
                     foreach (var node in answer)
                 	{
-                           this.graphVisualizer.FindNode(node).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Red;
+                        this.graphVisualizer.FindNode(node).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Red;
                 	}
+                    this.graphVisualizer.FindNode(root).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Green;
                     return answer;
                 }
                 return null;
             }
 
-            public void friendsRecommendation1(string root, string current, int level, HashSet<string> visited, ref List<string> stack, ref List<string> answer)
+            public void friendsRecommendation1(string root, string current, int level, HashSet<string> visited, List<string> stack, ref List<string> answer, ref List<List<string>> path_list)
             {
+                List<string> tempPath = new List<string>();
                 resetEdgeColor(this.graphVisualizer);
                 resetNodeColor(this.graphVisualizer);
                 stack.Add(current);
@@ -470,7 +478,12 @@ namespace Connect
                     if (!this.adjacent[root].Contains(current) && !answer.Contains(current))
 	                {
                         answer.Add(current);
-                	}                    
+                        foreach(var el in stack)
+                        {
+                            tempPath.Add(el);
+                        }
+                        path_list.Add(tempPath);
+                	}
                     stack.RemoveAt(stack.Count-1);
                     visited.Remove(current);
                     return;
@@ -479,7 +492,7 @@ namespace Connect
                 {
                     if (!visited.Contains(node))
                     {
-                        friendsRecommendation1(root, node, level+1, visited, ref stack, ref answer);
+                        friendsRecommendation1(root, node, level+1, visited, stack, ref answer, ref path_list);
                     }
                 }
                 stack.RemoveAt(stack.Count-1);
