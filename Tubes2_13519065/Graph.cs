@@ -201,28 +201,32 @@ namespace Connect
 
         public string friendRecommendationText(string root, List<string> answer)
         {
-            List<string> list = new List<string>();
+            List<Tuple<string, List<string>>> friendsRecc = new List<Tuple<string, List<string>>>();
             string text = "";
-            foreach(var account in answer)
+            if (answer == null)
             {
-                list = new List<string>(this.getMutualFriends(root, account));
-                text = text + "Nama akun: " + account + "\r\n";
-                if (answer == null)
+                text = text + "Tidak dapat menghasilkan friend recommendation.\r\n";
+                text = text + "Harap memperluas koneksi Anda!\r\n";
+            }
+            else
+            {
+                foreach(var account in answer)
                 {
-                    text = text + "Tidak dapat menghasilkan friend recommendation.\r\n";
-                    text = text + "Harap memperluas koneksi Anda!\r\n";
+                    friendsRecc.Add(Tuple.Create(account, this.getMutualFriends(root, account)));
                 }
-                else
+                friendsRecc = friendsRecc.OrderByDescending(tuple => tuple.Item2.Count).ToList();
+                foreach(var recAcc in friendsRecc)
                 {
-                    text = text + list.Count.ToString() + " mutual friend";
-                    if (list.Count!=1)
+                    text = text + "Nama akun: " + recAcc.Item1 + "\r\n";
+                    text = text + recAcc.Item2.Count.ToString() + " mutual friend";
+                    if (recAcc.Item2.Count!=1)
                     {
                         text = text + "s";
                     }
                     text = text + ":\r\n";
-                    text = text + String.Join("\r\n", list) + "\r\n";
+                    text = text + String.Join("\r\n", recAcc.Item2) + "\r\n";
+                    text = text + "\r\n";
                 }
-                text = text + "\r\n";
             }
             return text;
         }
