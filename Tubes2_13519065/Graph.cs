@@ -203,7 +203,7 @@ namespace Connect
         {
             List<Tuple<string, List<string>>> friendsRecc = new List<Tuple<string, List<string>>>();
             string text = "";
-            if (answer == null)
+            if (answer.Count == 0)
             {
                 text = text + "Tidak dapat menghasilkan friend recommendation.\r\n";
                 text = text + "Harap memperluas koneksi Anda!\r\n";
@@ -366,7 +366,7 @@ namespace Connect
                 }
                 // mewarnai simpul level 2
                 if (answer.Count() > 0) // Jika terdapat simpul level 2
-                {    
+                {
                     foreach (var _path in path_list)
                     {
                         drawEdgewithColor(this.graphVisualizer, _path);
@@ -376,12 +376,8 @@ namespace Connect
                         this.graphVisualizer.FindNode(node).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Red;
                 	}
                     this.graphVisualizer.FindNode(root).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Green;
-                    return answer;
                 }
-                else
-                {
-                    return null;
-                }
+                return answer;
             }
         }
 
@@ -482,9 +478,8 @@ namespace Connect
                         this.graphVisualizer.FindNode(node).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Red;
                 	}
                     this.graphVisualizer.FindNode(root).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Green;
-                    return answer;
                 }
-                return null;
+                return answer;
             }
 
             public void friendsRecommendation1(string root, string current, int level, HashSet<string> visited, List<string> stack, ref List<string> answer, ref List<List<string>> path_list)
