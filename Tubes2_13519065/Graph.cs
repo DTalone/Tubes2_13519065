@@ -11,22 +11,64 @@ namespace Connect
     internal class Graph
     {
         System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();
-        private Dictionary<string,List<string>> adjacent;
-        private int totalNodes;
-        private int totalEdges;
-        private Microsoft.Msagl.Drawing.Graph graphVisualizer;
-        private Microsoft.Msagl.GraphViewerGdi.GViewer viewer;
-        private Panel panel_DrawGraph;
+        private Dictionary<string,List<string>> adjacent; // representasi graf adjacency list
+        private int totalNodes; // jumlah nodes
+        private int totalEdges; // jumlah edges
+        private Microsoft.Msagl.Drawing.Graph graphVisualizer; // graph msagl
+        private Microsoft.Msagl.GraphViewerGdi.GViewer viewer; // viewer graph msagl
+        private Panel panel_DrawGraph; // panel untuk viewer di gui
+        // Constructor
         public Graph()
         {
             this.totalEdges = 0;
             this.totalNodes = 0;
         }
-        public int getEdges()
+        public Graph(StreamReader file)
+        {
+            this.totalNodes = 0;
+            this.totalEdges = 0;
+            this.adjacent = new Dictionary<string, List<string>>();
+            while (file.Peek() >= 0)
+            {
+                string baca;
+                List<string> existing;
+                baca = file.ReadLine(); // Read file line by line
+                string[] cur_line = baca.Split(' ');
+                if (!this.adjacent.ContainsKey(cur_line[0]))
+                {
+                    this.adjacent.Add(cur_line[0], new List<string>());
+                }
+                if (!this.adjacent.ContainsKey(cur_line[1]))
+                {
+                    this.adjacent.Add(cur_line[1], new List<string>());
+                }
+                existing = new List<string>(this.adjacent[cur_line[0]]);
+                existing.Add(cur_line[1]);
+                this.adjacent[cur_line[0]] = existing;
+
+                existing = new List<string>(this.adjacent[cur_line[1]]);
+                existing.Add(cur_line[0]);
+                this.adjacent[cur_line[1]] = existing;
+
+                this.totalEdges++;
+            }
+            Console.WriteLine("Inisialisasi");
+            foreach (KeyValuePair<string, List<string>> entry1 in this.adjacent)
+            {
+                entry1.Value.Sort();
+                Console.WriteLine(entry1.Key+" : "+string.Join("\t", entry1.Value));
+            }
+            this.totalNodes = this.adjacent.Count;
+        }
+
+        // Getter
+        public int getEdges() 
         {
             return this.totalEdges;
         }
-        public void resetNodeColor(Microsoft.Msagl.Drawing.Graph graph)
+
+        // Visualizer
+        public void resetNodeColor(Microsoft.Msagl.Drawing.Graph graph) // mengubah color suatu node
         {
             foreach (var node in graph.Nodes)
             {
@@ -80,51 +122,7 @@ namespace Connect
             panel_DrawGraph.Controls.Add(viewer);
             panel_DrawGraph.ResumeLayout();
         }
-        public void activateEdge(List<string> list)
-        {
-            for (var i=0;i<list.Count;i++)
-            {
-                this.graphVisualizer.FindNode(list[i]).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Green;
-                drawContainer(this.graphVisualizer);
-            }
-        }
-        public Graph(StreamReader file)
-        {
-            this.totalNodes = 0;
-            this.totalEdges = 0;
-            this.adjacent = new Dictionary<string, List<string>>();
-            while (file.Peek() >= 0)
-            {
-                string baca;
-                List<string> existing;
-                baca = file.ReadLine(); // Read file line by line
-                string[] cur_line = baca.Split(' ');
-                if (!this.adjacent.ContainsKey(cur_line[0]))
-                {
-                    this.adjacent.Add(cur_line[0], new List<string>());
-                }
-                if (!this.adjacent.ContainsKey(cur_line[1]))
-                {
-                    this.adjacent.Add(cur_line[1], new List<string>());
-                }
-                existing = new List<string>(this.adjacent[cur_line[0]]);
-                existing.Add(cur_line[1]);
-                this.adjacent[cur_line[0]] = existing;
-
-                existing = new List<string>(this.adjacent[cur_line[1]]);
-                existing.Add(cur_line[0]);
-                this.adjacent[cur_line[1]] = existing;
-
-                this.totalEdges++;
-            }
-            Console.WriteLine("Inisialisasi");
-            foreach (KeyValuePair<string, List<string>> entry1 in this.adjacent)
-            {
-                entry1.Value.Sort();
-                Console.WriteLine(entry1.Key+" : "+string.Join("\t", entry1.Value));
-            }
-            this.totalNodes = this.adjacent.Count;
-        }
+        // Delay untuk visualisasi graf
         public void wait(int milliseconds)
         {
             var timer1 = new System.Windows.Forms.Timer();
@@ -151,13 +149,15 @@ namespace Connect
         {
             return this.adjacent;
         }
-        public List<string> getMutualFriends(string root, string target)
+        public List<string> getMutualFriends(string root, string target) 
         {
             List<string> adjRoot = this.adjacent[root];
             List<string> adjTrgt = this.adjacent[target];
             List<string> mutualFriends = adjRoot.Intersect(adjTrgt).ToList();
             return mutualFriends;
         }
+
+        // untuk menuliskan text kedalam text box
         public string exploreFriendsText(List<string> answer)
         {
             string x = "";
@@ -227,8 +227,10 @@ namespace Connect
             }
             return text;
         }
+        // Kelas turunan algoritma BFS
         public class BFS : Graph
         {
+            // Inisialisasi graph jenis bfs supaya dapat dipanggil algoritma bfs untuk berbagai solusi
             public BFS(Graph graf, ref Microsoft.Msagl.Drawing.Graph graphVisualizer, ref Panel draw_graph, ref Microsoft.Msagl.GraphViewerGdi.GViewer viewer)
             {
                 this.adjacent = graf.adjacent;
@@ -238,43 +240,50 @@ namespace Connect
                 this.viewer = viewer;
                 this.panel_DrawGraph = draw_graph;
             }
-            public string search(string root, string target)
-            {
-                return null;
-            }
+
+            // Algoritma BFS  Eksplore Friend 
             public List<string> exploreFriends(string root, string target)
             {
+                // reset warna pada graph
                 resetEdgeColor(this.graphVisualizer);
                 resetNodeColor(this.graphVisualizer);
+                // mewarnai nodes start dan end
                 this.graphVisualizer.FindNode(root).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Green;
                 this.graphVisualizer.FindNode(target).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Red;
+
                 Queue<Tuple<string, List<string>>> queue = new Queue<Tuple<string, List<string>>>();
                 Tuple<string, List<string>> path;
                 HashSet<string> visited = new HashSet<string>();
-                List<string> tmp= new List<string>();
+                List<string> tmp = new List<string>();
                 tmp.Add(root);
                 queue.Enqueue(Tuple.Create(root, tmp));
                 visited.Add(root);
 
-                try {
+                try
+                {
+                    // Selama queue masih ada isinya maka lakukan perulangan
                     while (queue.Count != 0)
                     {
+                        // ambil elemen yang akan diperiksa
                         path = queue.Peek();
+                        // mewarnai node
                         drawEdgewithColor(this.graphVisualizer, path.Item2);
                         this.graphVisualizer.FindNode(root).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Green;
                         this.graphVisualizer.FindNode(target).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Red;
+                        // delay
                         wait(1000);
-                        //Console.WriteLine($"current Node: {path.Item1} , Total elements: {path.Item2.Count}");
-
+                        // apabila current node merupakan target maka kembalikan rute
                         if (path.Item1 == target)
                         {
                             return path.Item2;
                         }
                         resetEdgeColor(this.graphVisualizer);
                         resetNodeColor(this.graphVisualizer);
+                        // cek seluruh tetangga node current
                         foreach (var node in this.adjacent[path.Item1])
                         {
                             tmp = new List<string>(path.Item2);
+                            // apabila belum dikunjungi maka masukkan ke dalam queue
                             if (!visited.Contains(node))
                             {
                                 visited.Add(node);
@@ -285,17 +294,21 @@ namespace Connect
                         queue.Dequeue();
                     }
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     Console.WriteLine($"ERROR : {e}");
                 }
                 return null;
             }
+
+            // Algoritma BFS Friends Recommendation
             /* Mengembalikan node yang berada 2 level dari simpul & bukan tetangga root */
             public List<string> friendsRecommendation(string root)
             {
+                // reset warna pada graph 
                 resetEdgeColor(this.graphVisualizer);
                 resetNodeColor(this.graphVisualizer);
+                // mewarnai node start
                 this.graphVisualizer.FindNode(root).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Green;
                 Tuple<string, List<String>> head;
                 List<string> path = new List<string>(); // Untuk visualisasi rute menuju simpul level 2
@@ -310,9 +323,10 @@ namespace Connect
                 visited.Add(root);
                 try
                 {
-                    head = queue.Peek();
                     while (queue.Count != 0) // Selama queue masih isi
                     {
+                        // ambil elemen pertama pada queue
+                        head = queue.Peek();
                         if (head.Item2.Count == 3) // Jika berada di level 2 (memiliki panjang rute = 3)
                     	{
                             // Masukkan simpul level 2 ke answer
@@ -324,6 +338,7 @@ namespace Connect
 
                         else
                         {
+                            // periksa seluruh elemen tetangga apabila belum dikunjungi
                             foreach (var node in this.adjacent[head.Item1].OrderBy(simpul => simpul).ToList())
                             {
                                 path = new List<string> (head.Item2);
@@ -340,11 +355,7 @@ namespace Connect
                     	        }
                             }
                         }
-                        queue.Dequeue();
-                        if(queue.Count != 0)
-                        {
-                            head = queue.Peek();
-                        }                        
+                        queue.Dequeue();                       
                     }
                     /* EOP : queue kosong */
                 }
@@ -352,7 +363,7 @@ namespace Connect
                 {
                     Console.WriteLine($"ERROR : {e}");
                 }
-                
+                // mewarnai simpul level 2
                 if (answer.Count() > 0) // Jika terdapat simpul level 2
                 {    
                     foreach (var node in answer)
@@ -371,8 +382,10 @@ namespace Connect
         }
 
 
+        // Kelas turunan algoritma DFS
         public class DFS : Graph
         {
+            // inisialisasi graf dfs
             public DFS(Graph graf, ref Microsoft.Msagl.Drawing.Graph graphVisualizer, ref Panel draw_graph, ref Microsoft.Msagl.GraphViewerGdi.GViewer viewer)
             {
                 this.adjacent = graf.adjacent;
@@ -382,10 +395,9 @@ namespace Connect
                 this.viewer = viewer;
                 this.panel_DrawGraph = draw_graph;
             }
-            public string search(string root, string target)
-            {
-                return null;
-            }
+
+            // Algoritma DFS Explore Friend
+            // fungsi utama DFS
             public List<string> exploreFriends(string root, string target)
             {
                 List<string> stack = new List<string>();
@@ -405,9 +417,11 @@ namespace Connect
                 }
                 return null;
             }
+            // Fungsi rekursif DFS
             public void exploreF(string start, string current, string target, HashSet<string> visited, ref List<string> stack, ref bool found)
             {
                 stack.Add(current);
+                // mewarnai jalur dan node
                 drawEdgewithColor(this.graphVisualizer, stack);
                 this.graphVisualizer.FindNode(start).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Green;
                 this.graphVisualizer.FindNode(target).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Red;
@@ -415,11 +429,13 @@ namespace Connect
                 resetEdgeColor(this.graphVisualizer);
                 resetNodeColor(this.graphVisualizer);
                 visited.Add(current);
+
                 if (current==target)
                 {
                     found = true;
                     return;
                 }
+                // rekursif ke dalam simpul tetangga  selama belum dikunjungi
                 foreach (var node in this.adjacent[current])
                 {
                     if (!visited.Contains(node) && !found)
@@ -427,15 +443,19 @@ namespace Connect
                         exploreF(start, node, target, visited, ref stack, ref found);
                     }
                 }
+                // ketika sudah found maka atribut di dalam stackk yang menyimpan jawaban tidak di hapus
                 if (!found)
                 {
                     stack.RemoveAt(stack.Count-1);
                 }
             }
 
+            // Algoritma DFS friend Recommendation
             /* Mengembalikan node yang berada 2 level dari simpul & bukan tetangga root */
+            // Fungsi utama pemanggilan dfs
             public List<string> friendsRecommendation(string root)
             {
+                // mewarnai graph
                 resetEdgeColor(this.graphVisualizer);
                 resetNodeColor(this.graphVisualizer);
                 List<string> stack = new List<string>();
@@ -444,6 +464,7 @@ namespace Connect
                 List<string> answer = new List<string>();
 
                 friendsRecommendation1(root, root, 0, visited, ref stack, ref answer);
+                // mewarnai graph hasil
                 if (answer.Count > 0)
                 {
                     this.graphVisualizer.FindNode(root).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Green;
@@ -458,6 +479,7 @@ namespace Connect
 
             public void friendsRecommendation1(string root, string current, int level, HashSet<string> visited, ref List<string> stack, ref List<string> answer)
             {
+                // mewarnai graph
                 resetEdgeColor(this.graphVisualizer);
                 resetNodeColor(this.graphVisualizer);
                 stack.Add(current);
@@ -475,6 +497,7 @@ namespace Connect
                     visited.Remove(current);
                     return;
             	}
+                // mengunjungi simpul tetangga apabila belum dikunjungi
                 foreach (var node in this.adjacent[current])
                 {
                     if (!visited.Contains(node))
