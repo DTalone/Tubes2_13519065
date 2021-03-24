@@ -73,7 +73,7 @@
             this.panel_DrawGraph.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.panel_DrawGraph.Location = new System.Drawing.Point(68, 201);
             this.panel_DrawGraph.Name = "panel_DrawGraph";
-            this.panel_DrawGraph.Size = new System.Drawing.Size(735, 260);
+            this.panel_DrawGraph.Size = new System.Drawing.Size(735, 286);
             this.panel_DrawGraph.TabIndex = 2;
             this.panel_DrawGraph.Paint += new System.Windows.Forms.PaintEventHandler(this.panel_DrawGraph_Paint);
             // 
