@@ -201,29 +201,32 @@ namespace Connect
 
         public string friendRecommendationText(string root, List<string> answer)
         {
-            List<string> list = new List<string>();
+            List<Tuple<string, List<string>>> friendsRecc = new List<Tuple<string, List<string>>>();
             string text = "";
-            foreach(var account in answer)
+            if (answer == null)
             {
-                list = new List<string>(this.getMutualFriends(root, account));
-                text = text + "Nama akun: " + account + "\r\n";
-                if (answer == null)
+                text = text + "Tidak dapat menghasilkan friend recommendation.\r\n";
+                text = text + "Harap memperluas koneksi Anda!\r\n";
+            }
+            else
+            {
+                foreach(var account in answer)
                 {
-                    text = text + "Tidak dapat menghasilkan friend recommendation.\r\n";
-                    text = text + "Harap memperluas koneksi Anda!\r\n";
+                    friendsRecc.Add(Tuple.Create(account, this.getMutualFriends(root, account)));
                 }
-                else
+                friendsRecc = friendsRecc.OrderByDescending(tuple => tuple.Item2.Count).ToList();
+                foreach(var recAcc in friendsRecc)
                 {
-                    text = text + list.Count.ToString() + " mutual friend";
-                    if (list.Count!=1)
+                    text = text + "Nama akun: " + recAcc.Item1 + "\r\n";
+                    text = text + recAcc.Item2.Count.ToString() + " mutual friend";
+                    if (recAcc.Item2.Count!=1)
                     {
                         text = text + "s";
                     }
                     text = text + ":\r\n";
-                    text = text + String.Join("\r\n", list) + "\r\n";
+                    text = text + String.Join("\r\n", recAcc.Item2) + "\r\n";
                     text = text + "\r\n";
                 }
-                text = text + "\r\n";
             }
             return text;
         }
@@ -332,8 +335,6 @@ namespace Connect
                             // Masukkan simpul level 2 ke answer
                             answer.Add(head.Item2.Last());
                             path_list.Add(path);
-                            this.graphVisualizer.FindNode(root).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Green;
-                            this.graphVisualizer.FindNode(head.Item2.Last()).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Red;
 	                    }
 
                         else
@@ -366,9 +367,12 @@ namespace Connect
                 // mewarnai simpul level 2
                 if (answer.Count() > 0) // Jika terdapat simpul level 2
                 {    
+                    foreach (var _path in path_list)
+                    {
+                        drawEdgewithColor(this.graphVisualizer, _path);
+                    }
                     foreach (var node in answer)
                 	{
-                        // Warnain node level 2
                         this.graphVisualizer.FindNode(node).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Red;
                 	}
                     this.graphVisualizer.FindNode(root).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Green;
@@ -462,23 +466,30 @@ namespace Connect
                 HashSet<string> visited = new HashSet<string>();                
                 this.graphVisualizer.FindNode(root).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Green;
                 List<string> answer = new List<string>();
+                List<List<string>> path_list = new List<List<string>>();
 
-                friendsRecommendation1(root, root, 0, visited, ref stack, ref answer);
-                // mewarnai graph hasil
+                friendsRecommendation1(root, root, 0, visited, stack, ref answer, ref path_list);
                 if (answer.Count > 0)
                 {
-                    this.graphVisualizer.FindNode(root).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Green;
+                    resetEdgeColor(this.graphVisualizer);
+                    resetNodeColor(this.graphVisualizer);
+                    foreach (var _path in path_list)
+                    {
+                        drawEdgewithColor(this.graphVisualizer, _path);
+                    }
                     foreach (var node in answer)
                 	{
-                           this.graphVisualizer.FindNode(node).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Red;
+                        this.graphVisualizer.FindNode(node).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Red;
                 	}
+                    this.graphVisualizer.FindNode(root).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Green;
                     return answer;
                 }
                 return null;
             }
 
-            public void friendsRecommendation1(string root, string current, int level, HashSet<string> visited, ref List<string> stack, ref List<string> answer)
+            public void friendsRecommendation1(string root, string current, int level, HashSet<string> visited, List<string> stack, ref List<string> answer, ref List<List<string>> path_list)
             {
+                List<string> tempPath = new List<string>();
                 // mewarnai graph
                 resetEdgeColor(this.graphVisualizer);
                 resetNodeColor(this.graphVisualizer);
@@ -492,7 +503,12 @@ namespace Connect
                     if (!this.adjacent[root].Contains(current) && !answer.Contains(current))
 	                {
                         answer.Add(current);
-                	}                    
+                        foreach(var el in stack)
+                        {
+                            tempPath.Add(el);
+                        }
+                        path_list.Add(tempPath);
+                	}
                     stack.RemoveAt(stack.Count-1);
                     visited.Remove(current);
                     return;
@@ -502,7 +518,7 @@ namespace Connect
                 {
                     if (!visited.Contains(node))
                     {
-                        friendsRecommendation1(root, node, level+1, visited, ref stack, ref answer);
+                        friendsRecommendation1(root, node, level+1, visited, stack, ref answer, ref path_list);
                     }
                 }
                 stack.RemoveAt(stack.Count-1);
