@@ -1,0 +1,17 @@
+C:\Users\M. Fahmi Alamsyah\Documents\GitHub\Tubes2_13519065\Tubes2_13519065\bin\Debug\Tubes2_13519065.exe.config
+C:\Users\M. Fahmi Alamsyah\Documents\GitHub\Tubes2_13519065\Tubes2_13519065\bin\Debug\Tubes2_13519065.exe
+C:\Users\M. Fahmi Alamsyah\Documents\GitHub\Tubes2_13519065\Tubes2_13519065\bin\Debug\Tubes2_13519065.pdb
+C:\Users\M. Fahmi Alamsyah\Documents\GitHub\Tubes2_13519065\Tubes2_13519065\bin\Debug\AutomaticGraphLayout.dll
+C:\Users\M. Fahmi Alamsyah\Documents\GitHub\Tubes2_13519065\Tubes2_13519065\bin\Debug\AutomaticGraphLayout.Drawing.dll
+C:\Users\M. Fahmi Alamsyah\Documents\GitHub\Tubes2_13519065\Tubes2_13519065\bin\Debug\Microsoft.Msagl.GraphViewerGdi.dll
+C:\Users\M. Fahmi Alamsyah\Documents\GitHub\Tubes2_13519065\Tubes2_13519065\bin\Debug\Microsoft.Msagl.WpfGraphControl.dll
+C:\Users\M. Fahmi Alamsyah\Documents\GitHub\Tubes2_13519065\Tubes2_13519065\obj\Debug\Tubes2_13519065.csprojAssemblyReference.cache
+C:\Users\M. Fahmi Alamsyah\Documents\GitHub\Tubes2_13519065\Tubes2_13519065\obj\Debug\Connect.Form1.resources
+C:\Users\M. Fahmi Alamsyah\Documents\GitHub\Tubes2_13519065\Tubes2_13519065\obj\Debug\Tubes2_13519065.Form2.resources
+C:\Users\M. Fahmi Alamsyah\Documents\GitHub\Tubes2_13519065\Tubes2_13519065\obj\Debug\Tubes2_13519065.Form3.resources
+C:\Users\M. Fahmi Alamsyah\Documents\GitHub\Tubes2_13519065\Tubes2_13519065\obj\Debug\Tubes2_13519065.Properties.Resources.resources
+C:\Users\M. Fahmi Alamsyah\Documents\GitHub\Tubes2_13519065\Tubes2_13519065\obj\Debug\Tubes2_13519065.csproj.GenerateResource.cache
+C:\Users\M. Fahmi Alamsyah\Documents\GitHub\Tubes2_13519065\Tubes2_13519065\obj\Debug\Tubes2_13519065.csproj.CoreCompileInputs.cache
+C:\Users\M. Fahmi Alamsyah\Documents\GitHub\Tubes2_13519065\Tubes2_13519065\obj\Debug\Tubes2_13519065.csproj.CopyComplete
+C:\Users\M. Fahmi Alamsyah\Documents\GitHub\Tubes2_13519065\Tubes2_13519065\obj\Debug\Tubes2_13519065.exe
+C:\Users\M. Fahmi Alamsyah\Documents\GitHub\Tubes2_13519065\Tubes2_13519065\obj\Debug\Tubes2_13519065.pdb
